@@ -3,6 +3,7 @@ package ethprotocol
 import (
 	"fmt"
 
+	"github.com/0xVanfer/ethprotocol/lend"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
@@ -10,6 +11,7 @@ type Protocol struct {
 	Network      string
 	ProtocolName string
 	Client       bind.ContractBackend
+	LendPools    []lend.LendPool
 }
 
 func New(network string, protocolName string, client bind.ContractBackend) (*Protocol, error) {
