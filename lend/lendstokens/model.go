@@ -1,18 +1,18 @@
 package lendstokens
 
 import (
+	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/apy"
-	"github.com/0xVanfer/ethprotocol/internal/erc"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
 type SToken struct {
 	ProtocolName    string
 	Network         string
-	Basic           erc.ERC20   // basic info of the token
-	UnderlyingBasic erc.ERC20   // basic info of the underlying token
-	ApyInfo         apy.ApyInfo // borrow stable apy info
+	Basic           erc.ERC20Info // basic info of the token
+	UnderlyingBasic erc.ERC20Info // basic info of the underlying token
+	ApyInfo         apy.ApyInfo   // borrow stable apy info
 }
 
 // Initialize the SToken by using stoken address.

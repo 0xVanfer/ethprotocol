@@ -1,14 +1,14 @@
 package liquidity
 
 import (
+	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethprotocol/internal/apy"
-	"github.com/0xVanfer/ethprotocol/internal/erc"
 )
 
 // Struct for liquidity pools.
 type LiquidityPool struct {
 	Tokens     []TokenOfLp        // the tokens to make up the lp
-	LpToken    erc.ERC20          // basic info of lp token
+	LpToken    erc.ERC20Info      // basic info of lp token
 	ApyInfo    apy.ApyInfo        // apy info
 	Reserve    float64            // tvl in amount
 	ReserveUSD float64            // tvl in usd
@@ -18,10 +18,10 @@ type LiquidityPool struct {
 
 // Struct for tokens to make up lp token.
 type TokenOfLp struct {
-	Basic      erc.ERC20 // basic info of token
-	Underlying erc.ERC20 // basic info of underlying token, if has no underlying, use basic
-	Reserve    float64   // reserve of the single token in amount
-	ReserveUSD float64   // reserve of the single token in usd
+	Basic      erc.ERC20Info // basic info of token
+	Underlying erc.ERC20Info // basic info of underlying token, if has no underlying, use basic
+	Reserve    float64       // reserve of the single token in amount
+	ReserveUSD float64       // reserve of the single token in usd
 }
 
 // Struct for other infos for special protocols.
