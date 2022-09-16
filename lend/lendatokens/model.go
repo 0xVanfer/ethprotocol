@@ -2,8 +2,8 @@ package lendatokens
 
 import (
 	"github.com/0xVanfer/ethaddr"
-	"github.com/0xVanfer/ethprotocol/apy"
-	"github.com/0xVanfer/ethprotocol/erc"
+	"github.com/0xVanfer/ethprotocol/internal/apy"
+	"github.com/0xVanfer/ethprotocol/internal/erc"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 

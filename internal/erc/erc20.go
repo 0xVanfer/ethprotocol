@@ -11,14 +11,13 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
-// Basic info of ERC20 token.
+// Basic info of ERC20 token that are stable.
 type ERC20 struct {
-	Network     string
-	Address     string
-	Symbol      string
-	Decimals    int
-	TotalSupply float64
-	// Contract    *erc20.Erc20
+	Network  string
+	Address  string
+	Symbol   string
+	Decimals int
+	Contract *erc20.Erc20
 }
 
 func (t *ERC20) Init(address string, network string, client bind.ContractBackend) error {
@@ -40,18 +39,23 @@ func (t *ERC20) Init(address string, network string, client bind.ContractBackend
 	if err != nil {
 		return err
 	}
-	totalSupply, err := token.TotalSupply(nil)
-	if err != nil {
-		return err
-	}
 
 	t = &ERC20{
-		Network:     network,
-		Address:     address,
-		Symbol:      symbol,
-		Decimals:    int(decimals.Int64()),
-		TotalSupply: types.ToFloat64(totalSupply) * math.Pow10(-int(decimals.Int64())),
-		// Contract:    token,
+		Network:  network,
+		Address:  address,
+		Symbol:   symbol,
+		Decimals: int(decimals.Int64()),
+		Contract: token,
 	}
 	return nil
+}
+
+// Total supply will change over time.
+func (t *ERC20) GetTotalSupply() (float64, error) {
+	supply, err := t.Contract.TotalSupply(nil)
+	if err != nil {
+		return 0, err
+	}
+	totalSupply := types.ToFloat64(supply) * math.Pow10(-t.Decimals)
+	return totalSupply, nil
 }

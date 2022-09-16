@@ -3,7 +3,7 @@ package lend
 import (
 	"errors"
 
-	"github.com/0xVanfer/ethprotocol/erc"
+	"github.com/0xVanfer/ethprotocol/internal/erc"
 	"github.com/0xVanfer/ethprotocol/lend/lendatokens"
 	"github.com/0xVanfer/ethprotocol/lend/lendctokens"
 	"github.com/0xVanfer/ethprotocol/lend/lendstokens"
@@ -12,6 +12,9 @@ import (
 )
 
 type LendPool struct {
+	ProtocolName    string
+	Network         string
+	Client          bind.ContractBackend
 	UnderlyingBasic erc.ERC20
 	IsAaveLike      bool
 	IsCompoundLike  bool
@@ -28,6 +31,8 @@ func (p *LendPool) InitTokens(underlying string, network string, protocolName st
 	if err != nil {
 		return err
 	}
+	p.ProtocolName = protocolName
+	p.Client = client
 	// if has c token， which means it is compound-like
 	foundC, err := p.CToken.InitWithUnderlying(underlying, network, protocolName, client)
 	if err != nil {

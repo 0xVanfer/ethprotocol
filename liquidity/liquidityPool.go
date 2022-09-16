@@ -1,8 +1,8 @@
 package liquidity
 
 import (
-	"github.com/0xVanfer/ethprotocol/apy"
-	"github.com/0xVanfer/ethprotocol/erc"
+	"github.com/0xVanfer/ethprotocol/internal/apy"
+	"github.com/0xVanfer/ethprotocol/internal/erc"
 )
 
 // Struct for liquidity pools.
