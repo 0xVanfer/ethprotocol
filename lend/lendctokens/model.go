@@ -2,6 +2,7 @@ package lendctokens
 
 import (
 	"github.com/0xVanfer/ethaddr"
+	"github.com/0xVanfer/ethprotocol/apy"
 	"github.com/0xVanfer/ethprotocol/erc"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
@@ -9,8 +10,10 @@ import (
 type CToken struct {
 	ProtocolName    string
 	Network         string
-	Basic           erc.ERC20 // basic info of the token
-	UnderlyingBasic erc.ERC20 // basic info of the underlying token
+	Basic           erc.ERC20   // basic info of the token
+	UnderlyingBasic erc.ERC20   // basic info of the underlying token
+	DepositApyInfo  apy.ApyInfo // deposit apy info
+	BorrowApyInfo   apy.ApyInfo // borrow apy info
 }
 
 // Initialize the CToken by using ctoken address.

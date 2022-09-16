@@ -3,7 +3,6 @@ package lend
 import (
 	"errors"
 
-	"github.com/0xVanfer/ethprotocol/apy"
 	"github.com/0xVanfer/ethprotocol/erc"
 	"github.com/0xVanfer/ethprotocol/lend/lendatokens"
 	"github.com/0xVanfer/ethprotocol/lend/lendctokens"
@@ -13,20 +12,14 @@ import (
 )
 
 type LendPool struct {
-	UnderlyingBasic    erc.ERC20
-	IsAaveLike         bool
-	IsCompoundLike     bool
-	AToken             lendatokens.AToken
-	VToken             lendvtokens.VToken
-	SToken             lendstokens.SToken
-	CToken             lendctokens.CToken
-	DepositApy         apy.ApyInfo
-	BorrowApy          apy.ApyInfo
-	CollateralFactor   float64
-	LiquidationLimit   float64
-	LiquidationPenalty float64
-	AllowBorrow        int
-	AllowCollateral    int
+	UnderlyingBasic erc.ERC20
+	IsAaveLike      bool
+	IsCompoundLike  bool
+	AToken          lendatokens.AToken
+	VToken          lendvtokens.VToken
+	SToken          lendstokens.SToken
+	CToken          lendctokens.CToken
+	Params          LendPoolParams
 }
 
 // Initialize lend pool tokens.

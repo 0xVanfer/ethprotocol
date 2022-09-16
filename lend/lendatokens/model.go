@@ -2,6 +2,7 @@ package lendatokens
 
 import (
 	"github.com/0xVanfer/ethaddr"
+	"github.com/0xVanfer/ethprotocol/apy"
 	"github.com/0xVanfer/ethprotocol/erc"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
@@ -9,8 +10,9 @@ import (
 type AToken struct {
 	ProtocolName    string
 	Network         string
-	Basic           erc.ERC20 // basic info of the token
-	UnderlyingBasic erc.ERC20 // basic info of the underlying token
+	Basic           erc.ERC20   // basic info of the token
+	UnderlyingBasic erc.ERC20   // basic info of the underlying token
+	ApyInfo         apy.ApyInfo // deposit apy info
 }
 
 // Initialize the AToken by using atoken address.
