@@ -1,4 +1,4 @@
-package lend
+package lendvtokens
 
 import (
 	"strings"
@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
+// Read aave v2 vtokens from ethaddr.
 func GetAaveV2VTokenUnderlying(address string, network string, client bind.ContractBackend) string {
 	for underlying, vtoken := range ethaddr.AaveVTokenV2List[network] {
 		if strings.EqualFold(address, vtoken) {
@@ -16,6 +17,7 @@ func GetAaveV2VTokenUnderlying(address string, network string, client bind.Contr
 	return ""
 }
 
+// Read aave v3 vtokens from ethaddr.
 func GetAaveV3VTokenUnderlying(address string, network string, client bind.ContractBackend) string {
 	for underlying, vtoken := range ethaddr.AaveVTokenV3List[network] {
 		if strings.EqualFold(address, vtoken) {

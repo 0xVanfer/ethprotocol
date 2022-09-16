@@ -1,4 +1,4 @@
-package lend
+package lendatokens
 
 import (
 	"strings"
@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
+// Read aave v2 atokens from ethaddr, if not exist, try reading from contracts.
 func GetAaveV2ATokenUnderlying(address string, network string, client bind.ContractBackend) string {
 	for underlying, atoken := range ethaddr.AaveATokenV2List[network] {
 		if strings.EqualFold(address, atoken) {
@@ -27,6 +28,7 @@ func GetAaveV2ATokenUnderlying(address string, network string, client bind.Contr
 	return underlyingStr
 }
 
+// Read aave v3 atokens from ethaddr, if not exist, try reading from contracts.
 func GetAaveV3ATokenUnderlying(address string, network string, client bind.ContractBackend) string {
 	for underlying, atoken := range ethaddr.AaveATokenV3List[network] {
 		if strings.EqualFold(address, atoken) {
