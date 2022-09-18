@@ -3,9 +3,7 @@ module github.com/0xVanfer/ethprotocol
 go 1.19
 
 require (
-	github.com/0xVanfer/abigen v0.1.0
 	github.com/0xVanfer/chainId v0.1.0
-	github.com/0xVanfer/coingecko v0.1.0
 	github.com/0xVanfer/erc v0.1.0
 	github.com/0xVanfer/ethaddr v0.1.2
 	github.com/0xVanfer/types v0.1.1
@@ -14,6 +12,8 @@ require (
 )
 
 require (
+	github.com/0xVanfer/abigen v0.1.0 // indirect
+	github.com/0xVanfer/coingecko v0.1.0 // indirect
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect

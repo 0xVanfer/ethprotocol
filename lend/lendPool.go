@@ -4,76 +4,42 @@ import (
 	"errors"
 
 	"github.com/0xVanfer/erc"
-	"github.com/0xVanfer/ethprotocol/lend/lendatokens"
-	"github.com/0xVanfer/ethprotocol/lend/lendctokens"
-	"github.com/0xVanfer/ethprotocol/lend/lendstokens"
-	"github.com/0xVanfer/ethprotocol/lend/lendvtokens"
+	"github.com/0xVanfer/ethaddr"
+	"github.com/0xVanfer/ethprotocol/lend/lendaavelike"
+	"github.com/0xVanfer/ethprotocol/lend/lendcompoundlike"
 	"github.com/0xVanfer/ethprotocol/model"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
 type LendPool struct {
-	ProtocolBase    model.ProtocolBase
-	UnderlyingBasic erc.ERC20Info
-	AToken          lendatokens.AToken
-	VToken          lendvtokens.VToken
-	SToken          lendstokens.SToken
-	CToken          lendctokens.CToken
-	Params          LendPoolParams
-	PoolType        LendPoolType
+	ProtocolBasic   *model.ProtocolBasic
+	UnderlyingBasic *erc.ERC20Info
+	PoolType        *LendPoolType
+	AToken          *lendaavelike.AToken
+	VToken          *lendaavelike.VToken
+	SToken          *lendaavelike.SToken
+	CToken          *lendcompoundlike.CToken
+	Params          *LendPoolParams
 }
 type LendPoolType struct {
 	IsAaveLike     bool
 	IsCompoundLike bool
 }
 
-func (p *LendPool) Init(network string, protocolName string, client bind.ContractBackend) error {
-	p.ProtocolBase.ProtocolName = protocolName
-	p.ProtocolBase.Network = network
-	p.ProtocolBase.Client = client
-	return nil
-}
-
-func (p *LendPool) UpdateTokensByAToken() error {
-	return nil
-}
-
-// Initialize lend pool tokens.
-func (p *LendPool) InitTokens(underlying string, network string, protocolName string, client bind.ContractBackend) error {
-
-	err := p.UnderlyingBasic.Init(underlying, network, client)
-	if err != nil {
-		return err
-	}
-
-	// if has c token， which means it is compound-like
-	foundC, err := p.CToken.InitWithUnderlying(underlying, network, protocolName, client)
-	if err != nil {
-		return err
-	}
-	// if is not compound-like, try aave-like
-	if !foundC {
-		foundA, err := p.AToken.InitWithUnderlying(underlying, network, protocolName, client)
-		if err != nil {
-			return err
-		}
-		foundV, err := p.VToken.InitWithUnderlying(underlying, network, protocolName, client)
-		if err != nil {
-			return err
-		}
-		foundS, err := p.SToken.InitWithUnderlying(underlying, network, protocolName, client)
-		if err != nil {
-			return err
-		}
-		// both not supported by compound-like and aave-like
-		if !(foundA || foundS || foundV) {
-			return errors.New("underlying token not supported")
-		} else {
-			p.PoolType.IsAaveLike = true
-			return nil
-		}
-	} else {
+func (p *LendPool) Init(network string, protocolName string, client *bind.ContractBackend) error {
+	switch protocolName {
+	case ethaddr.AaveV2Protocol, ethaddr.AaveV3Protocol:
+		p.PoolType.IsAaveLike = true
+	case ethaddr.BenqiProtocol, ethaddr.CompoundProtocol, ethaddr.TraderJoeProtocol:
 		p.PoolType.IsCompoundLike = true
-		return nil
+	default:
+		return errors.New("protocol not supported")
 	}
+	if network == "" {
+		return errors.New("network must not be empty")
+	}
+	p.ProtocolBasic.ProtocolName = protocolName
+	p.ProtocolBasic.Network = network
+	p.ProtocolBasic.Client = client
+	return nil
 }
