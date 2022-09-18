@@ -5,6 +5,8 @@ import (
 	"github.com/0xVanfer/ethprotocol/internal/apy"
 )
 
+// Not recently updated.
+
 // Struct for liquidity pools.
 type LiquidityPool struct {
 	Tokens     []TokenOfLp        // the tokens to make up the lp

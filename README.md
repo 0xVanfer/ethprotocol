@@ -16,13 +16,14 @@ commonerc20s-->commonerc20decimals[decimals]
 pro[protocol]
 
 pro-->probasic[protocol basic info]
-pro-->lps[liquidity pools]
 pro-->bps[lend pools]
+pro-->lps[liquidity pools]
 pro-->sps[stake pools]
 
 probasic-->network
 probasic-->proname[protocol name]
-probasic-->client
+probasic-->client[eth client]
+probasic-->geckokey[coingecko caller]
 
 bps--aave-like-->avstoken[a,v,stoken]
 bps--compound-like-->ctoken

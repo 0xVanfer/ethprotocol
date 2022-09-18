@@ -8,7 +8,6 @@ import (
 	"github.com/0xVanfer/ethprotocol/lend/lendaavelike"
 	"github.com/0xVanfer/ethprotocol/lend/lendcompoundlike"
 	"github.com/0xVanfer/ethprotocol/model"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 )
 
 type LendPool struct {
@@ -26,20 +25,19 @@ type LendPoolType struct {
 	IsCompoundLike bool
 }
 
-func (p *LendPool) Init(network string, protocolName string, client *bind.ContractBackend) error {
-	switch protocolName {
+// Initialize the lend pool protocol basic and pool type.
+func (p *LendPool) Init(protocolBasic *model.ProtocolBasic) error {
+	switch protocolBasic.ProtocolName {
 	case ethaddr.AaveV2Protocol, ethaddr.AaveV3Protocol:
 		p.PoolType.IsAaveLike = true
 	case ethaddr.BenqiProtocol, ethaddr.CompoundProtocol, ethaddr.TraderJoeProtocol:
 		p.PoolType.IsCompoundLike = true
 	default:
-		return errors.New("protocol not supported")
+		return errors.New("protocol not supported lend pool")
 	}
-	if network == "" {
+	if protocolBasic.Network == "" {
 		return errors.New("network must not be empty")
 	}
-	p.ProtocolBasic.ProtocolName = protocolName
-	p.ProtocolBasic.Network = network
-	p.ProtocolBasic.Client = client
+	p.ProtocolBasic = protocolBasic
 	return nil
 }

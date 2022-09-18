@@ -8,16 +8,16 @@ import (
 	"github.com/imroc/req"
 )
 
-type aaveAllReservesReq struct {
+type aaveV2LendPoolsReq struct {
 	Data struct {
-		Reserves []aaveAllReserves `json:"reserves"`
+		Reserves []aaveV2LendPoolInfo `json:"reserves"`
 	} `json:"data"`
 }
 type aaveAToken struct {
 	ID string `json:"id"`
 }
 
-type aaveAllReserves struct {
+type aaveV2LendPoolInfo struct {
 	Symbol             string     `json:"symbol"`
 	Decimals           int        `json:"decimals"`
 	UnderlyingAsset    string     `json:"underlyingAsset"`
@@ -32,7 +32,8 @@ type aaveAllReserves struct {
 	SEmissionPerSecond string     `json:"sEmissionPerSecond"`
 }
 
-func ReqAaveV2Pools(network string) (reserves []aaveAllReserves, err error) {
+// Return aava v2 lend pools info.
+func ReqAaveV2LendPools(network string) ([]aaveV2LendPoolInfo, error) {
 	var url string
 	switch network {
 	case chainId.AvalancheChainName:
@@ -41,12 +42,12 @@ func ReqAaveV2Pools(network string) (reserves []aaveAllReserves, err error) {
 		url = "https://api.thegraph.com/subgraphs/name/aave/protocol-v2"
 	default:
 		errString := "not supported network:" + network
-		err = errors.New(errString)
-		return
+		err := errors.New(errString)
+		return nil, err
 	}
 	payload := strings.NewReader(`{"query":"{\n reserves {\n symbol\n decimals\n underlyingAsset\n aToken{id}\n vToken{id}\n sToken{id}\n liquidityRate\n stableBorrowRate\n variableBorrowRate\n aEmissionPerSecond\n vEmissionPerSecond\n sEmissionPerSecond\n}\n}\n\n"}`)
 	r, _ := req.Post(url, payload)
-	var v aaveAllReservesReq
-	err = r.ToJSON(&v)
+	var v aaveV2LendPoolsReq
+	err := r.ToJSON(&v)
 	return v.Data.Reserves, err
 }
