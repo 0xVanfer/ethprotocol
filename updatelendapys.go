@@ -72,7 +72,7 @@ func (prot *Protocol) UpdateLendApys() error {
 			lendPool.AToken.ApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
 			lendPool.VToken.ApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
 
-			prot.LendPools = append(prot.LendPools, &lendPool)
+			prot.LendPools = append(prot.LendPools, lendPool)
 		}
 		return nil
 	case ethaddr.AaveV3Protocol:

@@ -1,6 +1,9 @@
 package lend
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // Update pool tokens info by underlying token.
 func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
@@ -14,26 +17,36 @@ func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
 	}
 	// avsc basic
 	if p.PoolType.IsAaveLike {
+		fmt.Println("aaa")
+
 		p.AToken.UnderlyingBasic = p.UnderlyingBasic
 		p.VToken.UnderlyingBasic = p.UnderlyingBasic
 		p.SToken.UnderlyingBasic = p.UnderlyingBasic
+		fmt.Println("bbb")
 
 		p.AToken.ProtocolBasic = p.ProtocolBasic
 		p.VToken.ProtocolBasic = p.ProtocolBasic
 		p.SToken.ProtocolBasic = p.ProtocolBasic
+		fmt.Println("ccc")
 
 		err = p.AToken.UpdateATokenByUnderlying(underlying)
 		if err != nil {
 			return err
 		}
+		fmt.Println("aaa")
+
 		err = p.VToken.UpdateVTokenByUnderlying(underlying)
 		if err != nil {
 			return err
 		}
+		fmt.Println("bbb")
+
 		err = p.AToken.UpdateATokenByUnderlying(underlying)
 		if err != nil {
 			return err
 		}
+		fmt.Println("ccc")
+
 	}
 	if p.PoolType.IsCompoundLike {
 		p.CToken.ProtocolBasic = p.ProtocolBasic

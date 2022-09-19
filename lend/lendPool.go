@@ -11,14 +11,14 @@ import (
 )
 
 type LendPool struct {
-	ProtocolBasic   *model.ProtocolBasic
-	UnderlyingBasic *erc.ERC20Info
-	PoolType        *LendPoolType
-	AToken          *lendaavelike.AToken
-	VToken          *lendaavelike.VToken
-	SToken          *lendaavelike.SToken
-	CToken          *lendcompoundlike.CToken
-	Params          *LendPoolParams
+	ProtocolBasic   model.ProtocolBasic
+	UnderlyingBasic erc.ERC20Info
+	PoolType        LendPoolType
+	AToken          lendaavelike.AToken
+	VToken          lendaavelike.VToken
+	SToken          lendaavelike.SToken
+	CToken          lendcompoundlike.CToken
+	Params          LendPoolParams
 }
 type LendPoolType struct {
 	IsAaveLike     bool
@@ -26,12 +26,12 @@ type LendPoolType struct {
 }
 
 // Initialize the lend pool protocol basic and pool type.
-func (p *LendPool) Init(protocolBasic *model.ProtocolBasic) error {
+func (p *LendPool) Init(protocolBasic model.ProtocolBasic) error {
 	switch protocolBasic.ProtocolName {
 	case ethaddr.AaveV2Protocol, ethaddr.AaveV3Protocol:
-		p.PoolType = &LendPoolType{IsAaveLike: true}
+		p.PoolType = LendPoolType{IsAaveLike: true}
 	case ethaddr.BenqiProtocol, ethaddr.CompoundProtocol, ethaddr.TraderJoeProtocol:
-		p.PoolType = &LendPoolType{IsCompoundLike: true}
+		p.PoolType = LendPoolType{IsCompoundLike: true}
 	default:
 		return errors.New("protocol not supported lend pool")
 	}

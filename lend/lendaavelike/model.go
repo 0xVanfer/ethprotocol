@@ -7,22 +7,22 @@ import (
 )
 
 type AToken struct {
-	ProtocolBasic   *model.ProtocolBasic
-	Basic           *erc.ERC20Info // basic info of the token
-	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	ApyInfo         *apy.ApyInfo   // deposit apy info
+	ProtocolBasic   model.ProtocolBasic
+	Basic           erc.ERC20Info // basic info of the token
+	UnderlyingBasic erc.ERC20Info // basic info of the underlying token
+	ApyInfo         apy.ApyInfo   // deposit apy info
 }
 
 type VToken struct {
-	ProtocolBasic   *model.ProtocolBasic
-	Basic           *erc.ERC20Info // basic info of the token
-	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	ApyInfo         *apy.ApyInfo   // borrow variable apy info
+	ProtocolBasic   model.ProtocolBasic
+	Basic           erc.ERC20Info // basic info of the token
+	UnderlyingBasic erc.ERC20Info // basic info of the underlying token
+	ApyInfo         apy.ApyInfo   // borrow variable apy info
 }
 
 type SToken struct {
-	ProtocolBasic   *model.ProtocolBasic
-	Basic           *erc.ERC20Info // basic info of the token
-	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	ApyInfo         *apy.ApyInfo   // borrow stable apy info
+	ProtocolBasic   model.ProtocolBasic
+	Basic           erc.ERC20Info // basic info of the token
+	UnderlyingBasic erc.ERC20Info // basic info of the underlying token
+	ApyInfo         apy.ApyInfo   // borrow stable apy info
 }
