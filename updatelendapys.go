@@ -56,7 +56,6 @@ func (prot *Protocol) UpdateLendApys() error {
 
 			underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendPool.UnderlyingBasic.Symbol, network, "usd")
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			aEmissionUSD := types.ToFloat64(poolInfo.AEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
@@ -66,7 +65,6 @@ func (prot *Protocol) UpdateLendApys() error {
 			}
 			aSupply, err := lendPool.AToken.Basic.TotalSupply()
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			aSupplyUSD := aSupply * underlyingPriceUSD
@@ -79,7 +77,6 @@ func (prot *Protocol) UpdateLendApys() error {
 			}
 			vSupply, err := lendPool.VToken.Basic.TotalSupply()
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			vSupplyUSD := vSupply * underlyingPriceUSD
@@ -118,10 +115,8 @@ func (prot *Protocol) UpdateLendApys() error {
 			}
 			underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendPool.UnderlyingBasic.Symbol, network, "usd")
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
-
 			lendPool.AToken.ApyInfo.Apy = types.ToFloat64(assetInfo.LiquidityIndex) * types.ToFloat64(assetInfo.LiquidityRate) * math.Pow10(-54)
 			lendPool.VToken.ApyInfo.Apy = types.ToFloat64(assetInfo.VariableBorrowIndex) * types.ToFloat64(assetInfo.VariableBorrowRate) * math.Pow10(-54)
 			lendPool.AToken.ApyInfo.Apr = apy.Apy2Apr(lendPool.AToken.ApyInfo.Apy)
@@ -131,39 +126,35 @@ func (prot *Protocol) UpdateLendApys() error {
 				if !strings.EqualFold(types.ToString(incentiveReward.UnderlyingAsset), underlyingAddress) {
 					continue
 				}
-				aSupply, err := lendPool.AToken.Basic.TotalSupply()
-				if err != nil {
-					fmt.Println(err)
-					continue
-				}
+				aSupply, _ := lendPool.AToken.Basic.TotalSupply()
 				aSupplyUSD := aSupply * underlyingPriceUSD
 				aRewardTokens := incentiveReward.AIncentiveData.RewardsTokenInformation
 				for _, aRewardToken := range aRewardTokens {
 					rewardTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(aRewardToken.RewardTokenSymbol, network, "usd")
 					if err != nil {
-						fmt.Println(err)
 						continue
 					}
 					rewardPerYearUSD := types.ToFloat64(aRewardToken.EmissionPerSecond) * constants.SecondsPerYear * math.Pow10(-types.ToInt(aRewardToken.RewardTokenDecimals)) * rewardTokenPrice
 					apy := rewardPerYearUSD / aSupplyUSD
+					if aSupplyUSD == 0 {
+						apy = 0
+					}
 					lendPool.AToken.ApyInfo.ApyIncentive += apy
 				}
 
-				vSupply, err := lendPool.VToken.Basic.TotalSupply()
-				if err != nil {
-					fmt.Println(err)
-					continue
-				}
+				vSupply, _ := lendPool.VToken.Basic.TotalSupply()
 				vSupplyUSD := vSupply * underlyingPriceUSD
 				vRewardTokens := incentiveReward.VIncentiveData.RewardsTokenInformation
 				for _, vRewardToken := range vRewardTokens {
 					rewardTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(vRewardToken.RewardTokenSymbol, network, "usd")
 					if err != nil {
-						fmt.Println(err)
 						continue
 					}
 					rewardPerYearUSD := types.ToFloat64(vRewardToken.EmissionPerSecond) * constants.SecondsPerYear * math.Pow10(-types.ToInt(vRewardToken.RewardTokenDecimals)) * rewardTokenPrice
 					apy := rewardPerYearUSD / vSupplyUSD
+					if vSupplyUSD == 0 {
+						apy = 0
+					}
 					lendPool.VToken.ApyInfo.ApyIncentive += apy
 				}
 				lendPool.AToken.ApyInfo.AprIncentive = apy.Apy2Apr(lendPool.AToken.ApyInfo.ApyIncentive)
@@ -197,18 +188,15 @@ func (prot *Protocol) UpdateLendApys() error {
 			}
 			underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendPool.UnderlyingBasic.Symbol, network, "usd")
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			qitoken, err := benqiCToken.NewBenqiCToken(ctoken, *prot.ProtocolBasic.Client)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			// supply apy
 			supplyRatePerSecond, err := qitoken.SupplyRatePerTimestamp(nil)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			lendPool.CToken.DepositApyInfo.Apr = types.ToFloat64(supplyRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
@@ -216,7 +204,6 @@ func (prot *Protocol) UpdateLendApys() error {
 			// borrow apy
 			borrowRatePerSecond, err := qitoken.BorrowRatePerTimestamp(nil)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			lendPool.CToken.BorrowApyInfo.Apr = types.ToFloat64(borrowRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
@@ -224,12 +211,10 @@ func (prot *Protocol) UpdateLendApys() error {
 			// apy incentives
 			supplyReward0, err := comptroller.SupplyRewardSpeeds(nil, 0, ctoken)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			supplyReward1, err := comptroller.SupplyRewardSpeeds(nil, 1, ctoken)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			supplyReward0PerDay := types.ToFloat64(supplyReward0) * 86400 * math.Pow10(-18)
@@ -238,12 +223,10 @@ func (prot *Protocol) UpdateLendApys() error {
 
 			borrowReward0, err := comptroller.BorrowRewardSpeeds(nil, 0, ctoken)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			borrowReward1, err := comptroller.BorrowRewardSpeeds(nil, 1, ctoken)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			borrowReward0PerDay := types.ToFloat64(borrowReward0) * 86400 * math.Pow10(-18)
@@ -252,12 +235,10 @@ func (prot *Protocol) UpdateLendApys() error {
 
 			cash, err := qitoken.GetCash(nil)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			totalBorrow, err := qitoken.TotalBorrows(nil)
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
 			totalBorrows := types.ToFloat64(totalBorrow) * math.Pow10(-*lendPool.UnderlyingBasic.Decimals)
