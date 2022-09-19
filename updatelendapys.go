@@ -53,6 +53,10 @@ func (prot *Protocol) UpdateLendApys() error {
 				continue
 			}
 			aEmissionUSD := types.ToFloat64(poolInfo.AEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
+			if lendPool.AToken.Basic == nil {
+				fmt.Println("atoken of", underlyingAddress, "not found")
+				continue
+			}
 			aSupply, err := lendPool.AToken.Basic.TotalSupply()
 			if err != nil {
 				fmt.Println(err)
@@ -62,6 +66,10 @@ func (prot *Protocol) UpdateLendApys() error {
 			lendPool.AToken.ApyInfo.AprIncentive = aEmissionUSD / aSupplyUSD
 
 			vEmissionUSD := types.ToFloat64(poolInfo.VEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
+			if lendPool.VToken.Basic == nil {
+				fmt.Println("vtoken of", underlyingAddress, "not found")
+				continue
+			}
 			vSupply, err := lendPool.VToken.Basic.TotalSupply()
 			if err != nil {
 				fmt.Println(err)

@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/0xVanfer/chainId v0.1.0
 	github.com/0xVanfer/coingecko v0.1.0
-	github.com/0xVanfer/erc v0.5.0
+	github.com/0xVanfer/erc v0.5.2
 	github.com/0xVanfer/ethaddr v0.1.3
 	github.com/0xVanfer/types v0.1.1
 	github.com/ethereum/go-ethereum v1.10.25

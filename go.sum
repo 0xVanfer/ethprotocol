@@ -4,8 +4,8 @@ github.com/0xVanfer/chainId v0.1.0 h1:DmBckf59v3wecp4uSvh9YB4Jct9q3Js6Pf5Uw6tFUl
 github.com/0xVanfer/chainId v0.1.0/go.mod h1:YgJHKMKd0J+3VGCoBMjaVE5GUdwQz5Ud585Pr9vEg40=
 github.com/0xVanfer/coingecko v0.1.0 h1:DmO7gCjJniwYjYK4NQke2VLYrNs7dJn/7cTobEHysM0=
 github.com/0xVanfer/coingecko v0.1.0/go.mod h1:pnMuvlcI6fDfRsjVpOYtLZQkG1lqnv9YOCfg9l78XHM=
-github.com/0xVanfer/erc v0.5.0 h1:OD74QVR3JR7XQm+pnFdmseY9ga20DW3mb6wnDbm4Dso=
-github.com/0xVanfer/erc v0.5.0/go.mod h1:qsXCvq5X/JLh1uxFjMp0X8NKVql/wiHqIlK2k7/ExFA=
+github.com/0xVanfer/erc v0.5.2 h1:dP6NNmTWxK/MCzzW8JpxJF0YbNpv5nv9QCtULRanPcw=
+github.com/0xVanfer/erc v0.5.2/go.mod h1:GuO63czvDv+nMDIEyU1sh9GvIuuOC1sRdLjKBJlf4xM=
 github.com/0xVanfer/ethaddr v0.1.3 h1:BCkWhA2mvD4zAuBvPnOBiAj9JeoBzQKQh58PfgWyrWU=
 github.com/0xVanfer/ethaddr v0.1.3/go.mod h1:Kk7fj+D1+BWNiSVH+zHHrrlUXdiD1HRVTZbYoHwqFEA=
 github.com/0xVanfer/types v0.1.1 h1:DOlVvMlLsCWBJLoeq/aJ1Mt/xENBq0aRXEY4BG4MOOI=
