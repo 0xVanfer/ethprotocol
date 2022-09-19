@@ -7,9 +7,9 @@ import (
 )
 
 type CToken struct {
-	ProtocolBasic   model.ProtocolBasic
-	Basic           erc.ERC20Info // basic info of the token
-	UnderlyingBasic erc.ERC20Info // basic info of the underlying token
-	DepositApyInfo  apy.ApyInfo   // deposit apy info
-	BorrowApyInfo   apy.ApyInfo   // deposit apy info
+	ProtocolBasic   *model.ProtocolBasic
+	Basic           *erc.ERC20Info // basic info of the token
+	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
+	DepositApyInfo  apy.ApyInfo    // deposit apy info
+	BorrowApyInfo   apy.ApyInfo    // deposit apy info
 }

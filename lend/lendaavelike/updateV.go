@@ -3,6 +3,8 @@ package lendaavelike
 import (
 	"errors"
 	"strings"
+
+	"github.com/0xVanfer/erc"
 )
 
 // Use v token address to get underlying address.
@@ -25,9 +27,11 @@ func (t *VToken) UpdateVTokenByUnderlying(underlying string) error {
 		return errors.New("v token protocol basic must be initialized")
 	}
 	vtoken := VTokenListMap[t.ProtocolBasic.ProtocolName][t.ProtocolBasic.Network][underlying]
-	err := t.Basic.Init(vtoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
+	var newBasic erc.ERC20Info
+	err := newBasic.Init(vtoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
+	t.Basic = &newBasic
 	return nil
 }

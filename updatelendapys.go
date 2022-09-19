@@ -37,33 +37,37 @@ func (prot *Protocol) UpdateLendApys() error {
 			}
 			underlyingAddress := poolInfo.UnderlyingAsset
 			var lendPool lend.LendPool
-			err = lendPool.Init(prot.ProtocolBasic)
+			err = lendPool.Init(*prot.ProtocolBasic)
 			if err != nil {
 				return err // must be fatal error
 			}
-			err = lendPool.UpdateTokensByUnderlying(underlyingAddress)
-			if err != nil {
-				fmt.Println(underlyingAddress, "update tokens err:", err)
-				continue
-			}
+			lendPool.UpdateTokensByUnderlying(underlyingAddress)
+
 			lendPool.AToken.ApyInfo.Apr = types.ToFloat64(poolInfo.LiquidityRate) * math.Pow10(-27)
 			lendPool.VToken.ApyInfo.Apr = types.ToFloat64(poolInfo.VariableBorrowRate) * math.Pow10(-27)
 			lendPool.SToken.ApyInfo.Apr = types.ToFloat64(poolInfo.StableBorrowRate) * math.Pow10(-27)
 
-			aEmissionUSD := types.ToFloat64(poolInfo.AEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
-			aSupplyUSD, err := lendPool.AToken.Basic.TotalSupplyUSD(prot.ProtocolBasic.Gecko)
+			underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendPool.UnderlyingBasic.Symbol, prot.ProtocolBasic.Network, "usd")
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
+			aEmissionUSD := types.ToFloat64(poolInfo.AEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
+			aSupply, err := lendPool.AToken.Basic.TotalSupply()
+			if err != nil {
+				fmt.Println(err)
+				continue
+			}
+			aSupplyUSD := aSupply * underlyingPriceUSD
 			lendPool.AToken.ApyInfo.AprIncentive = aEmissionUSD / aSupplyUSD
 
 			vEmissionUSD := types.ToFloat64(poolInfo.VEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
-			vSupplyUSD, err := lendPool.VToken.Basic.TotalSupplyUSD(prot.ProtocolBasic.Gecko)
+			vSupply, err := lendPool.VToken.Basic.TotalSupply()
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
+			vSupplyUSD := vSupply * underlyingPriceUSD
 			lendPool.VToken.ApyInfo.AprIncentive = vEmissionUSD / vSupplyUSD
 
 			lendPool.AToken.ApyInfo.Apy = apy.Apr2Apy(lendPool.AToken.ApyInfo.Apr)
@@ -72,7 +76,7 @@ func (prot *Protocol) UpdateLendApys() error {
 			lendPool.AToken.ApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
 			lendPool.VToken.ApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
 
-			prot.LendPools = append(prot.LendPools, lendPool)
+			prot.LendPools = append(prot.LendPools, &lendPool)
 		}
 		return nil
 	case ethaddr.AaveV3Protocol:

@@ -2,7 +2,10 @@ package lend
 
 import (
 	"errors"
-	"fmt"
+
+	"github.com/0xVanfer/chainId"
+	"github.com/0xVanfer/erc"
+	"github.com/0xVanfer/ethprotocol/test/eth"
 )
 
 // Update pool tokens info by underlying token.
@@ -11,51 +14,31 @@ func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
 		return errors.New("lend pool protocol basic must be initialized")
 	}
 	// underlying basic
-	err := p.UnderlyingBasic.Init(underlying, p.ProtocolBasic.Network, *p.ProtocolBasic.Client)
+	var newUnderlying erc.ERC20Info
+	err := newUnderlying.Init(underlying, p.ProtocolBasic.Network, eth.GetConnector(chainId.AvalancheChainName))
 	if err != nil {
 		return err
 	}
+	p.UnderlyingBasic = &newUnderlying
 	// avsc basic
 	if p.PoolType.IsAaveLike {
-		fmt.Println("aaa")
-
-		p.AToken.UnderlyingBasic = p.UnderlyingBasic
-		p.VToken.UnderlyingBasic = p.UnderlyingBasic
-		p.SToken.UnderlyingBasic = p.UnderlyingBasic
-		fmt.Println("bbb")
+		p.AToken.UnderlyingBasic = &newUnderlying
+		p.VToken.UnderlyingBasic = &newUnderlying
+		p.SToken.UnderlyingBasic = &newUnderlying
 
 		p.AToken.ProtocolBasic = p.ProtocolBasic
 		p.VToken.ProtocolBasic = p.ProtocolBasic
 		p.SToken.ProtocolBasic = p.ProtocolBasic
-		fmt.Println("ccc")
 
-		err = p.AToken.UpdateATokenByUnderlying(underlying)
-		if err != nil {
-			return err
-		}
-		fmt.Println("aaa")
-
-		err = p.VToken.UpdateVTokenByUnderlying(underlying)
-		if err != nil {
-			return err
-		}
-		fmt.Println("bbb")
-
-		err = p.AToken.UpdateATokenByUnderlying(underlying)
-		if err != nil {
-			return err
-		}
-		fmt.Println("ccc")
-
+		_ = p.AToken.UpdateATokenByUnderlying(underlying)
+		_ = p.VToken.UpdateVTokenByUnderlying(underlying)
+		_ = p.SToken.UpdateSTokenByUnderlying(underlying)
 	}
 	if p.PoolType.IsCompoundLike {
 		p.CToken.ProtocolBasic = p.ProtocolBasic
 		p.CToken.UnderlyingBasic = p.UnderlyingBasic
 
-		err = p.CToken.UpdateCTokenByUnderlying(underlying)
-		if err != nil {
-			return err
-		}
+		_ = p.CToken.UpdateCTokenByUnderlying(underlying)
 	}
 	return nil
 }
@@ -66,11 +49,7 @@ func (p *LendPool) UpdateTokensByAToken(atoken string) error {
 	if err != nil {
 		return err
 	}
-	err = p.UpdateTokensByUnderlying(underlyingAddress)
-	if err != nil {
-		return err
-	}
-	return nil
+	return p.UpdateTokensByUnderlying(underlyingAddress)
 }
 
 // Update pool tokens info by v token.
@@ -79,11 +58,7 @@ func (p *LendPool) UpdateTokensByVToken(vtoken string) error {
 	if err != nil {
 		return err
 	}
-	err = p.UpdateTokensByUnderlying(underlyingAddress)
-	if err != nil {
-		return err
-	}
-	return nil
+	return p.UpdateTokensByUnderlying(underlyingAddress)
 }
 
 // Update pool tokens info by s token.
@@ -92,11 +67,7 @@ func (p *LendPool) UpdateTokensBySToken(stoken string) error {
 	if err != nil {
 		return err
 	}
-	err = p.UpdateTokensByUnderlying(underlyingAddress)
-	if err != nil {
-		return err
-	}
-	return nil
+	return p.UpdateTokensByUnderlying(underlyingAddress)
 }
 
 // Update pool tokens info by c token.
@@ -105,9 +76,5 @@ func (p *LendPool) UpdateTokensByCToken(ctoken string) error {
 	if err != nil {
 		return err
 	}
-	err = p.UpdateTokensByUnderlying(underlyingAddress)
-	if err != nil {
-		return err
-	}
-	return nil
+	return p.UpdateTokensByUnderlying(underlyingAddress)
 }

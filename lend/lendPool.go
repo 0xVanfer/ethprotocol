@@ -11,8 +11,8 @@ import (
 )
 
 type LendPool struct {
-	ProtocolBasic   model.ProtocolBasic
-	UnderlyingBasic erc.ERC20Info
+	ProtocolBasic   *model.ProtocolBasic
+	UnderlyingBasic *erc.ERC20Info
 	PoolType        LendPoolType
 	AToken          lendaavelike.AToken
 	VToken          lendaavelike.VToken
@@ -38,6 +38,6 @@ func (p *LendPool) Init(protocolBasic model.ProtocolBasic) error {
 	if protocolBasic.Network == "" {
 		return errors.New("network must not be empty")
 	}
-	p.ProtocolBasic = protocolBasic
+	p.ProtocolBasic = &protocolBasic
 	return nil
 }

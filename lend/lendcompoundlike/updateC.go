@@ -3,6 +3,8 @@ package lendcompoundlike
 import (
 	"errors"
 	"strings"
+
+	"github.com/0xVanfer/erc"
 )
 
 // Use c token address to get underlying address.
@@ -25,9 +27,11 @@ func (t *CToken) UpdateCTokenByUnderlying(underlying string) error {
 		return errors.New("c token protocol basic must be initialized")
 	}
 	ctoken := CTokenListMap[t.ProtocolBasic.ProtocolName][t.ProtocolBasic.Network][underlying]
-	err := t.Basic.Init(ctoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
+	var newBasic erc.ERC20Info
+	err := newBasic.Init(ctoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
+	t.Basic = &newBasic
 	return nil
 }

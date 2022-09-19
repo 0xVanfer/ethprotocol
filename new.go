@@ -12,10 +12,10 @@ import (
 )
 
 type Protocol struct {
-	ProtocolBasic  model.ProtocolBasic
-	LiquidityPools []liquidity.LiquidityPool
-	StakePools     []stake.StakePool
-	LendPools      []lend.LendPool
+	ProtocolBasic  *model.ProtocolBasic
+	LiquidityPools []*liquidity.LiquidityPool
+	StakePools     []*stake.StakePool
+	LendPools      []*lend.LendPool
 }
 
 func New(network string, protocolName string, client bind.ContractBackend, coingeckoApiKey string) (*Protocol, error) {
@@ -36,7 +36,7 @@ func New(network string, protocolName string, client bind.ContractBackend, coing
 		Gecko:        gecko,
 	}
 	protocol := Protocol{
-		ProtocolBasic: ProtocolBasic,
+		ProtocolBasic: &ProtocolBasic,
 	}
 	return &protocol, nil
 }

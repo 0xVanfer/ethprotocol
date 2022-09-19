@@ -3,6 +3,8 @@ package lendaavelike
 import (
 	"errors"
 	"strings"
+
+	"github.com/0xVanfer/erc"
 )
 
 // Use a token address to get underlying address.
@@ -25,29 +27,11 @@ func (t *AToken) UpdateATokenByUnderlying(underlying string) error {
 		return errors.New("a token protocol basic must be initialized")
 	}
 	atoken := ATokenListMap[t.ProtocolBasic.ProtocolName][t.ProtocolBasic.Network][underlying]
-	err := t.Basic.Init(atoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
+	var newBasic erc.ERC20Info
+	err := newBasic.Init(atoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
+	t.Basic = &newBasic
 	return nil
 }
-
-// // Use a token address to update underlying and a token info.
-// func (t *AToken) UpdateTokensByAToken(atoken string) error {
-// 	if !t.ProtocolBasic.Regularcheck() {
-// 		return errors.New("a token protocol basic must be initialized")
-// 	}
-// 	err := t.Basic.Init(atoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	underlyingAddress, err := t.GetUnderlyingAddress(atoken)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	err = t.UnderlyingBasic.Init(underlyingAddress, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
