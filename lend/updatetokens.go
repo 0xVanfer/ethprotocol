@@ -3,9 +3,7 @@ package lend
 import (
 	"errors"
 
-	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/erc"
-	"github.com/0xVanfer/ethprotocol/test/eth"
 )
 
 // Update pool tokens info by underlying token.
@@ -15,7 +13,7 @@ func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
 	}
 	// underlying basic
 	var newUnderlying erc.ERC20Info
-	err := newUnderlying.Init(underlying, p.ProtocolBasic.Network, eth.GetConnector(chainId.AvalancheChainName))
+	err := newUnderlying.Init(underlying, p.ProtocolBasic.Network, *p.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
