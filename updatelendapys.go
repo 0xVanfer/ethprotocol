@@ -6,6 +6,7 @@ import (
 	"math"
 	"strings"
 
+	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/apy"
 	"github.com/0xVanfer/ethprotocol/internal/constants"
@@ -18,7 +19,7 @@ func (prot *Protocol) UpdateLendApys() error {
 	if !prot.ProtocolBasic.Regularcheck() {
 		return errors.New("protocol basic must be initialized")
 	}
-	chainTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(ethaddr.WrappedChainTokenList[prot.ProtocolBasic.Network], prot.ProtocolBasic.Network, "usd")
+	chainTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(chainId.ChainTokenSymbolList[prot.ProtocolBasic.Network], prot.ProtocolBasic.Network, "usd")
 	if err != nil {
 		return err
 	}
