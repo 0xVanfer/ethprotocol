@@ -33,8 +33,8 @@ func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
 		_ = p.SToken.UpdateSTokenByUnderlying(underlying)
 	}
 	if p.PoolType.IsCompoundLike {
+		p.CToken.UnderlyingBasic = &newUnderlying
 		p.CToken.ProtocolBasic = p.ProtocolBasic
-		p.CToken.UnderlyingBasic = p.UnderlyingBasic
 
 		_ = p.CToken.UpdateCTokenByUnderlying(underlying)
 	}
@@ -43,6 +43,7 @@ func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
 
 // Update pool tokens info by a token.
 func (p *LendPool) UpdateTokensByAToken(atoken string) error {
+	p.AToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.AToken.GetUnderlyingAddress(atoken)
 	if err != nil {
 		return err
@@ -52,6 +53,7 @@ func (p *LendPool) UpdateTokensByAToken(atoken string) error {
 
 // Update pool tokens info by v token.
 func (p *LendPool) UpdateTokensByVToken(vtoken string) error {
+	p.VToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.VToken.GetUnderlyingAddress(vtoken)
 	if err != nil {
 		return err
@@ -61,6 +63,7 @@ func (p *LendPool) UpdateTokensByVToken(vtoken string) error {
 
 // Update pool tokens info by s token.
 func (p *LendPool) UpdateTokensBySToken(stoken string) error {
+	p.SToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.SToken.GetUnderlyingAddress(stoken)
 	if err != nil {
 		return err
@@ -70,6 +73,7 @@ func (p *LendPool) UpdateTokensBySToken(stoken string) error {
 
 // Update pool tokens info by c token.
 func (p *LendPool) UpdateTokensByCToken(ctoken string) error {
+	p.CToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.CToken.GetUnderlyingAddress(ctoken)
 	if err != nil {
 		return err

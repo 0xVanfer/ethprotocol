@@ -14,5 +14,8 @@ type ProtocolBasic struct {
 
 // Return if protocol basic pass regular check.
 func (p *ProtocolBasic) Regularcheck() bool {
+	if p == nil {
+		return false
+	}
 	return (p.Network != "") && (p.ProtocolName != "")
 }
