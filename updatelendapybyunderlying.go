@@ -134,13 +134,10 @@ func (prot *Protocol) UpdateLendApyByUnderlying(underlyings []string) error {
 			if err != nil {
 				return err
 			}
-			fmt.Println(*lendPool.UnderlyingBasic.Symbol)
 			underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendPool.UnderlyingBasic.Symbol, network, "usd")
 			if err != nil {
-				fmt.Println(err)
 				continue
 			}
-			fmt.Println(underlyingPriceUSD)
 			lendPool.AToken.ApyInfo.Apy = types.ToFloat64(assetInfo.LiquidityIndex) * types.ToFloat64(assetInfo.LiquidityRate) * math.Pow10(-54)
 			lendPool.VToken.ApyInfo.Apy = types.ToFloat64(assetInfo.VariableBorrowIndex) * types.ToFloat64(assetInfo.VariableBorrowRate) * math.Pow10(-54)
 			lendPool.AToken.ApyInfo.Apr = apy.Apy2Apr(lendPool.AToken.ApyInfo.Apy)
