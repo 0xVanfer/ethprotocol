@@ -29,9 +29,9 @@ type LendPoolType struct {
 func (p *LendPool) Init(protocolBasic *model.ProtocolBasic) error {
 	switch protocolBasic.ProtocolName {
 	case ethaddr.AaveV2Protocol, ethaddr.AaveV3Protocol:
-		p.PoolType.IsAaveLike = true
+		p.PoolType = &LendPoolType{IsAaveLike: true}
 	case ethaddr.BenqiProtocol, ethaddr.CompoundProtocol, ethaddr.TraderJoeProtocol:
-		p.PoolType.IsCompoundLike = true
+		p.PoolType = &LendPoolType{IsCompoundLike: true}
 	default:
 		return errors.New("protocol not supported lend pool")
 	}
