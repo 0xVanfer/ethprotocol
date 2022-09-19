@@ -18,7 +18,7 @@ type Protocol struct {
 	LendPools      []*lend.LendPool
 }
 
-func New(network string, protocolName string, client *bind.ContractBackend, coingeckoApiKey string) (*Protocol, error) {
+func New(network string, protocolName string, client bind.ContractBackend, coingeckoApiKey string) (*Protocol, error) {
 	if client == nil {
 		fmt.Println("You do not have a client, most functions will not work properly.")
 	}
@@ -32,7 +32,7 @@ func New(network string, protocolName string, client *bind.ContractBackend, coin
 	ProtocolBasic := model.ProtocolBasic{
 		Network:      network,
 		ProtocolName: protocolName,
-		Client:       client,
+		Client:       &client,
 		Gecko:        gecko,
 	}
 	protocol := Protocol{
