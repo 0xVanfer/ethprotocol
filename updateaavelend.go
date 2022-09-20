@@ -1,7 +1,6 @@
 package ethprotocol
 
 import (
-	"errors"
 	"fmt"
 	"math"
 	"strings"
@@ -18,11 +17,9 @@ import (
 	"github.com/0xVanfer/types"
 )
 
-// If underlyings is empty, read all pools.
+// Internal use only! No protocol regular check!
+// Update aave v2 lend pools by underlyings.
 func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
-	if !prot.ProtocolBasic.Regularcheck() {
-		return errors.New("protocol basic must be initialized")
-	}
 	network := prot.ProtocolBasic.Network
 	// chain token price
 	chainTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(chainId.ChainTokenSymbolList[network], network, "usd")
@@ -101,12 +98,11 @@ func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
 	}
 	return nil
 }
-func (prot *Protocol) updateAaveV3Lend(underlyings []string) error {
-	if !prot.ProtocolBasic.Regularcheck() {
-		return errors.New("protocol basic must be initialized")
-	}
-	network := prot.ProtocolBasic.Network
 
+// Internal use only! No protocol regular check!
+// Update aave v3 lend pools by underlyings.
+func (prot *Protocol) updateAaveV3Lend(underlyings []string) error {
+	network := prot.ProtocolBasic.Network
 	// address provider, used in contracts
 	addressProviderAddress := types.ToAddress(ethaddr.AavePoolAddressProviderV3List[network])
 	// get the basic info and rewards of a pool

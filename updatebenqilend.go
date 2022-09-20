@@ -1,7 +1,6 @@
 package ethprotocol
 
 import (
-	"errors"
 	"math"
 
 	"github.com/0xVanfer/abigen/benqi/benqiCToken"
@@ -15,11 +14,11 @@ import (
 	"github.com/0xVanfer/types"
 )
 
+// Internal use only! No protocol regular check!
+// Update benqi lend pools by underlyings.
 func (prot *Protocol) updateBenqiLend(underlyings []string) error {
-	if !prot.ProtocolBasic.Regularcheck() {
-		return errors.New("protocol basic must be initialized")
-	}
 	network := prot.ProtocolBasic.Network
+	// avax price
 	chainTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(chainId.ChainTokenSymbolList[network], network, "usd")
 	if err != nil {
 		return err
@@ -28,6 +27,7 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 	if err != nil {
 		return err
 	}
+	// all ctokens
 	allMarkets, err := comptroller.GetAllMarkets(nil)
 	if err != nil {
 		return err
@@ -37,7 +37,6 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		return err
 	}
 	for _, ctoken := range allMarkets {
-
 		var lendPool lend.LendPool
 		err = lendPool.Init(*prot.ProtocolBasic)
 		if err != nil {
@@ -45,7 +44,7 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		}
 		err = lendPool.UpdateTokensByCToken(types.ToString(ctoken))
 		if err != nil {
-			return err
+			continue
 		}
 		// select from underlyings needed
 		underlyingAddress := *lendPool.UnderlyingBasic.Address
