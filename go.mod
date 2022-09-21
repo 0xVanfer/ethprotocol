@@ -8,7 +8,7 @@ require (
 	github.com/0xVanfer/coingecko v0.1.1
 	github.com/0xVanfer/erc v0.5.3
 	github.com/0xVanfer/ethaddr v0.1.3
-	github.com/0xVanfer/types v0.1.1
+	github.com/0xVanfer/types v0.1.2
 	github.com/ethereum/go-ethereum v1.10.25
 	github.com/imroc/req v0.3.2
 )
