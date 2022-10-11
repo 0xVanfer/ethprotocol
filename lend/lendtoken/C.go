@@ -1,4 +1,4 @@
-package lendcompoundlike
+package lendtoken
 
 import (
 	"errors"
@@ -6,7 +6,16 @@ import (
 
 	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethaddr"
+	"github.com/0xVanfer/ethprotocol/model"
 )
+
+type CToken struct {
+	ProtocolBasic   *model.ProtocolBasic
+	Basic           *erc.ERC20Info // basic info of the token
+	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
+	DepositApyInfo  model.ApyInfo  // deposit apy info
+	BorrowApyInfo   model.ApyInfo  // deposit apy info
+}
 
 // Use c token address to get underlying address.
 func (t *CToken) GetUnderlyingAddress(ctoken string) (string, error) {

@@ -1,4 +1,4 @@
-package lendaavelike
+package lendtoken
 
 import (
 	"errors"
@@ -6,7 +6,15 @@ import (
 
 	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethaddr"
+	"github.com/0xVanfer/ethprotocol/model"
 )
+
+type AToken struct {
+	ProtocolBasic   *model.ProtocolBasic
+	Basic           *erc.ERC20Info // basic info of the token
+	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
+	ApyInfo         model.ApyInfo  // deposit apy info
+}
 
 // Use a token address to get underlying address.
 func (t *AToken) GetUnderlyingAddress(atoken string) (string, error) {
