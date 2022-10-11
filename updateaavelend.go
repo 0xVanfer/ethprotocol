@@ -9,15 +9,15 @@ import (
 	"github.com/0xVanfer/abigen/aave/aaveUiPoolDataProviderV3"
 	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/ethaddr"
-	"github.com/0xVanfer/ethprotocol/internal/apy"
-	"github.com/0xVanfer/ethprotocol/internal/common"
 	"github.com/0xVanfer/ethprotocol/internal/constants"
 	"github.com/0xVanfer/ethprotocol/internal/requests"
 	"github.com/0xVanfer/ethprotocol/lend"
 	"github.com/0xVanfer/types"
+	"github.com/0xVanfer/utils"
 )
 
 // Internal use only! No protocol regular check!
+//
 // Update aave v2 lend pools by underlyings.
 func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
 	network := prot.ProtocolBasic.Network
@@ -39,7 +39,7 @@ func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
 		// select from underlyings needed
 		underlyingAddress := poolInfo.UnderlyingAsset
 		if len(underlyings) != 0 {
-			if !common.ContainInArrayWithoutCapital(underlyingAddress, underlyings) {
+			if !utils.ContainInArrayX(underlyingAddress, underlyings) {
 				continue
 			}
 		}
@@ -88,11 +88,11 @@ func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
 		lendPool.VToken.ApyInfo.AprIncentive = vEmissionUSD / vSupplyUSD
 
 		// apr 2 apy
-		lendPool.AToken.ApyInfo.Apy = apy.Apr2Apy(lendPool.AToken.ApyInfo.Apr)
-		lendPool.VToken.ApyInfo.Apy = apy.Apr2Apy(lendPool.VToken.ApyInfo.Apr)
-		lendPool.SToken.ApyInfo.Apy = apy.Apr2Apy(lendPool.VToken.ApyInfo.Apr)
-		lendPool.AToken.ApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
-		lendPool.VToken.ApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
+		lendPool.AToken.ApyInfo.Apy = utils.Apr2Apy(lendPool.AToken.ApyInfo.Apr)
+		lendPool.VToken.ApyInfo.Apy = utils.Apr2Apy(lendPool.VToken.ApyInfo.Apr)
+		lendPool.SToken.ApyInfo.Apy = utils.Apr2Apy(lendPool.VToken.ApyInfo.Apr)
+		lendPool.AToken.ApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
+		lendPool.VToken.ApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
 
 		prot.LendPools = append(prot.LendPools, &lendPool)
 	}
@@ -115,7 +115,7 @@ func (prot *Protocol) updateAaveV3Lend(underlyings []string) error {
 		// select from underlyings needed
 		underlyingAddress := types.ToLowerString(assetInfo.UnderlyingAsset)
 		if len(underlyings) != 0 {
-			if !common.ContainInArrayWithoutCapital(underlyingAddress, underlyings) {
+			if !utils.ContainInArrayX(underlyingAddress, underlyings) {
 				continue
 			}
 		}
@@ -134,8 +134,8 @@ func (prot *Protocol) updateAaveV3Lend(underlyings []string) error {
 		}
 		lendPool.AToken.ApyInfo.Apy = types.ToFloat64(assetInfo.LiquidityIndex) * types.ToFloat64(assetInfo.LiquidityRate) * math.Pow10(-54)
 		lendPool.VToken.ApyInfo.Apy = types.ToFloat64(assetInfo.VariableBorrowIndex) * types.ToFloat64(assetInfo.VariableBorrowRate) * math.Pow10(-54)
-		lendPool.AToken.ApyInfo.Apr = apy.Apy2Apr(lendPool.AToken.ApyInfo.Apy)
-		lendPool.VToken.ApyInfo.Apr = apy.Apy2Apr(lendPool.VToken.ApyInfo.Apy)
+		lendPool.AToken.ApyInfo.Apr = utils.Apy2Apr(lendPool.AToken.ApyInfo.Apy)
+		lendPool.VToken.ApyInfo.Apr = utils.Apy2Apr(lendPool.VToken.ApyInfo.Apy)
 
 		for _, incentiveReward := range incentiveInfo {
 			if !strings.EqualFold(types.ToString(incentiveReward.UnderlyingAsset), underlyingAddress) {
@@ -172,8 +172,8 @@ func (prot *Protocol) updateAaveV3Lend(underlyings []string) error {
 				}
 				lendPool.VToken.ApyInfo.ApyIncentive += apy
 			}
-			lendPool.AToken.ApyInfo.AprIncentive = apy.Apy2Apr(lendPool.AToken.ApyInfo.ApyIncentive)
-			lendPool.VToken.ApyInfo.AprIncentive = apy.Apy2Apr(lendPool.VToken.ApyInfo.ApyIncentive)
+			lendPool.AToken.ApyInfo.AprIncentive = utils.Apy2Apr(lendPool.AToken.ApyInfo.ApyIncentive)
+			lendPool.VToken.ApyInfo.AprIncentive = utils.Apy2Apr(lendPool.VToken.ApyInfo.ApyIncentive)
 		}
 		prot.LendPools = append(prot.LendPools, &lendPool)
 	}

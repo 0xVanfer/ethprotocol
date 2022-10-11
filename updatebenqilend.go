@@ -7,11 +7,10 @@ import (
 	"github.com/0xVanfer/abigen/benqi/benqiComptroller"
 	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/ethaddr"
-	"github.com/0xVanfer/ethprotocol/internal/apy"
-	"github.com/0xVanfer/ethprotocol/internal/common"
 	"github.com/0xVanfer/ethprotocol/internal/constants"
 	"github.com/0xVanfer/ethprotocol/lend"
 	"github.com/0xVanfer/types"
+	"github.com/0xVanfer/utils"
 )
 
 // Internal use only! No protocol regular check!
@@ -49,7 +48,7 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		// select from underlyings needed
 		underlyingAddress := *lendPool.UnderlyingBasic.Address
 		if len(underlyings) != 0 {
-			if !common.ContainInArrayWithoutCapital(underlyingAddress, underlyings) {
+			if !utils.ContainInArrayX(underlyingAddress, underlyings) {
 				continue
 			}
 		}
@@ -67,14 +66,14 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 			continue
 		}
 		lendPool.CToken.DepositApyInfo.Apr = types.ToFloat64(supplyRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
-		lendPool.CToken.DepositApyInfo.Apy = apy.Apr2Apy(lendPool.CToken.DepositApyInfo.Apr)
+		lendPool.CToken.DepositApyInfo.Apy = utils.Apr2Apy(lendPool.CToken.DepositApyInfo.Apr)
 		// borrow apy
 		borrowRatePerSecond, err := qitoken.BorrowRatePerTimestamp(nil)
 		if err != nil {
 			continue
 		}
 		lendPool.CToken.BorrowApyInfo.Apr = types.ToFloat64(borrowRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
-		lendPool.CToken.BorrowApyInfo.Apy = apy.Apr2Apy(lendPool.CToken.BorrowApyInfo.Apr)
+		lendPool.CToken.BorrowApyInfo.Apy = utils.Apr2Apy(lendPool.CToken.BorrowApyInfo.Apr)
 		// apy incentives
 		supplyReward0, err := comptroller.SupplyRewardSpeeds(nil, 0, ctoken)
 		if err != nil {
@@ -120,8 +119,8 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		}
 		lendPool.CToken.DepositApyInfo.AprIncentive = supplyAprIncentive
 		lendPool.CToken.BorrowApyInfo.AprIncentive = borrowAprIncentive
-		lendPool.CToken.DepositApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.CToken.DepositApyInfo.AprIncentive)
-		lendPool.CToken.BorrowApyInfo.ApyIncentive = apy.Apr2Apy(lendPool.CToken.BorrowApyInfo.AprIncentive)
+		lendPool.CToken.DepositApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.CToken.DepositApyInfo.AprIncentive)
+		lendPool.CToken.BorrowApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.CToken.BorrowApyInfo.AprIncentive)
 
 		prot.LendPools = append(prot.LendPools, &lendPool)
 	}

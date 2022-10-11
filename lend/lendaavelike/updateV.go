@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/0xVanfer/erc"
+	"github.com/0xVanfer/ethaddr"
 )
 
 // Use v token address to get underlying address.
@@ -12,7 +13,7 @@ func (t *VToken) GetUnderlyingAddress(vtoken string) (string, error) {
 	if !t.ProtocolBasic.Regularcheck() {
 		return "", errors.New("v token protocol basic must be initialized")
 	}
-	vList := VTokenListMap[t.ProtocolBasic.ProtocolName]
+	vList := ethaddr.AaveLikeVTokenListMap[t.ProtocolBasic.ProtocolName]
 	for underlying, vtokenAddress := range vList[t.ProtocolBasic.Network] {
 		if strings.EqualFold(vtokenAddress, vtoken) {
 			return underlying, nil
@@ -26,7 +27,7 @@ func (t *VToken) UpdateVTokenByUnderlying(underlying string) error {
 	if !t.ProtocolBasic.Regularcheck() {
 		return errors.New("v token protocol basic must be initialized")
 	}
-	vtoken := VTokenListMap[t.ProtocolBasic.ProtocolName][t.ProtocolBasic.Network][underlying]
+	vtoken := ethaddr.AaveLikeVTokenListMap[t.ProtocolBasic.ProtocolName][t.ProtocolBasic.Network][underlying]
 	var newBasic erc.ERC20Info
 	err := newBasic.Init(vtoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {

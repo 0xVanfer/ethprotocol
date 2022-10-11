@@ -2,7 +2,7 @@ package liquidity
 
 import (
 	"github.com/0xVanfer/erc"
-	"github.com/0xVanfer/ethprotocol/internal/apy"
+	"github.com/0xVanfer/ethprotocol/model"
 )
 
 // Not recently updated.
@@ -11,7 +11,7 @@ import (
 type LiquidityPool struct {
 	Tokens     []TokenOfLp        // the tokens to make up the lp
 	LpToken    erc.ERC20Info      // basic info of lp token
-	ApyInfo    apy.ApyInfo        // apy info
+	ApyInfo    model.ApyInfo      // apy info
 	Reserve    float64            // tvl in amount
 	ReserveUSD float64            // tvl in usd
 	Volume24   float64            // trade volume in 24 hours

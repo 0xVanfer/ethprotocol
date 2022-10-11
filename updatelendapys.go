@@ -33,7 +33,8 @@ func (prot *Protocol) UpdateLendApys() error {
 	}
 }
 
-// Update some of the protocol's lend pools apys by giving the underlying addresses.
+// Update some of the protocol's lend pools apys by given underlying addresses.
+//
 // If "underlyings" is empty, equal to UpdateLendApys().
 func (prot *Protocol) UpdateLendApyByUnderlying(underlyings []string) error {
 	// protocol basic must be initialized
