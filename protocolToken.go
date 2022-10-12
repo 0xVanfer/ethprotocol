@@ -5,7 +5,7 @@ import (
 )
 
 // Return protocol token according to network.
-func (p *Protocol) ProtocolToken() string {
+func (p *Protocol) GetProtocolToken() string {
 	if !p.ProtocolBasic.Regularcheck() {
 		return ""
 	}
