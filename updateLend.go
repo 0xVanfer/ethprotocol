@@ -2,8 +2,10 @@ package ethprotocol
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/0xVanfer/ethaddr"
+	"github.com/0xVanfer/ethprotocol/lend"
 )
 
 // Update some of the protocol's lend pools apys by given underlying addresses.
@@ -34,4 +36,22 @@ func (prot *Protocol) UpdateLendApys(underlyings ...string) error {
 	default:
 		return errors.New("protocol not supported lend pools")
 	}
+}
+
+// Update lend pools' params.
+//
+// params: map[underlying address] = pool params.
+func (prot *Protocol) UpdateLendParams(params map[string]lend.LendPoolParams) error {
+	// protocol basic must be initialized
+	if !prot.ProtocolBasic.Regularcheck() {
+		return errors.New("protocol basic must be initialized")
+	}
+	for _, pool := range prot.LendPools {
+		for underlying, param := range params {
+			if strings.EqualFold(*pool.UnderlyingBasic.Address, underlying) {
+				pool.UpdatePoolParams(param)
+			}
+		}
+	}
+	return nil
 }
