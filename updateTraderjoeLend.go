@@ -9,7 +9,6 @@ import (
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/constants"
 	"github.com/0xVanfer/ethprotocol/lend"
-	"github.com/0xVanfer/ethprotocol/test/eth"
 	"github.com/0xVanfer/types"
 	"github.com/0xVanfer/utils"
 )
@@ -24,7 +23,7 @@ func (prot *Protocol) updateTraderjoeLend(underlyings []string) error {
 	if err != nil {
 		return err
 	}
-	rewarder, err := traderjoeRewardDistributor.NewTraderjoeRewardDistributor(types.ToAddress(ethaddr.TraderjoeRewardDistributorList[network]), eth.GetConnector(network))
+	rewarder, err := traderjoeRewardDistributor.NewTraderjoeRewardDistributor(types.ToAddress(ethaddr.TraderjoeRewardDistributorList[network]), *prot.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
