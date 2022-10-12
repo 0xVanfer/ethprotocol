@@ -1,6 +1,7 @@
 package ethprotocol
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/0xVanfer/abigen/benqi/benqiCToken"
@@ -17,6 +18,10 @@ import (
 // Update benqi lend pools by underlyings.
 func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 	network := prot.ProtocolBasic.Network
+	if !utils.ContainInArrayX(network, []string{chainId.AvalancheChainName}) {
+		fmt.Println("Benqi lend", network, "not supported.")
+		return nil
+	}
 	// avax price
 	chainTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(chainId.ChainTokenSymbolList[network], network, "usd")
 	if err != nil {

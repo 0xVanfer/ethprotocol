@@ -34,7 +34,7 @@ func (prot *Protocol) UpdateLendApys(underlyings ...string) error {
 	case ethaddr.TraderJoeProtocol:
 		return prot.updateTraderjoeLend(underlyings)
 	default:
-		return errors.New("protocol not supported lend pools")
+		return errors.New(prot.ProtocolBasic.ProtocolName + " lend pools not supported")
 	}
 }
 

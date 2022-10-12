@@ -18,6 +18,10 @@ import (
 // Update aave v2 lend pools by underlyings.
 func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
 	network := prot.ProtocolBasic.Network
+	if !utils.ContainInArrayX(network, []string{chainId.AvalancheChainName, chainId.EthereumChainName}) {
+		fmt.Println("Aave lend V2", network, "not supported.")
+		return nil
+	}
 	// chain token price
 	chainTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(chainId.ChainTokenSymbolList[network], network, "usd")
 	if err != nil {

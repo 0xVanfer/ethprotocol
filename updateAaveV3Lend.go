@@ -1,6 +1,7 @@
 package ethprotocol
 
 import (
+	"fmt"
 	"math"
 	"strings"
 
@@ -20,6 +21,10 @@ import (
 // Update aave v3 lend pools by underlyings.
 func (prot *Protocol) updateAaveV3Lend(underlyings []string) error {
 	network := prot.ProtocolBasic.Network
+	if !utils.ContainInArrayX(network, []string{chainId.AvalancheChainName, chainId.PolygonChainName}) {
+		fmt.Println("Aave lend V3", network, "not supported.")
+		return nil
+	}
 	if network == chainId.PolygonChainName {
 		return prot.updateAaveV3LendPolygon(underlyings)
 	}

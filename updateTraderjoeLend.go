@@ -1,11 +1,13 @@
 package ethprotocol
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/0xVanfer/abigen/traderjoe/traderjoeCToken"
 	"github.com/0xVanfer/abigen/traderjoe/traderjoeComptroller"
 	"github.com/0xVanfer/abigen/traderjoe/traderjoeRewardDistributor"
+	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/constants"
 	"github.com/0xVanfer/ethprotocol/lend"
@@ -18,7 +20,10 @@ import (
 // Update compound-like lend pools by underlyings.
 func (prot *Protocol) updateTraderjoeLend(underlyings []string) error {
 	network := prot.ProtocolBasic.Network
-
+	if !utils.ContainInArrayX(network, []string{chainId.AvalancheChainName}) {
+		fmt.Println("Traderjoe lend", network, "not supported.")
+		return nil
+	}
 	comptroller, err := traderjoeComptroller.NewTraderjoeComptroller(types.ToAddress(ethaddr.TraderjoeJoetrollerList[network]), *prot.ProtocolBasic.Client)
 	if err != nil {
 		return err
