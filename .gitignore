@@ -1,3 +1,5 @@
 /test/
 *_test.go
 test/const.go
+go.work
+go.work.sum

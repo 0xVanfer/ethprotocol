@@ -9,7 +9,7 @@ import (
 	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/constants"
-	"github.com/0xVanfer/ethprotocol/lend"
+	"github.com/0xVanfer/ethprotocol/lending"
 	"github.com/0xVanfer/types"
 	"github.com/0xVanfer/utils"
 )
@@ -41,23 +41,23 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		return err
 	}
 	for _, ctoken := range allMarkets {
-		var lendPool lend.LendPool
-		err = lendPool.Init(*prot.ProtocolBasic)
+		var lendingPool lending.LendingPool
+		err = lendingPool.Init(*prot.ProtocolBasic)
 		if err != nil {
 			return err // must be fatal error
 		}
-		err = lendPool.UpdateTokensByCToken(types.ToString(ctoken))
+		err = lendingPool.UpdateTokensByCToken(types.ToString(ctoken))
 		if err != nil {
 			continue
 		}
 		// select from underlyings needed
-		underlyingAddress := *lendPool.UnderlyingBasic.Address
+		underlyingAddress := *lendingPool.UnderlyingBasic.Address
 		if len(underlyings) != 0 {
 			if !utils.ContainInArrayX(underlyingAddress, underlyings) {
 				continue
 			}
 		}
-		underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendPool.UnderlyingBasic.Symbol, network, "usd")
+		underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendingPool.UnderlyingBasic.Symbol, network, "usd")
 		if err != nil {
 			continue
 		}
@@ -70,15 +70,15 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		if err != nil {
 			continue
 		}
-		lendPool.CToken.DepositApyInfo.Apr = types.ToFloat64(supplyRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
-		lendPool.CToken.DepositApyInfo.Apy = utils.Apr2Apy(lendPool.CToken.DepositApyInfo.Apr)
+		lendingPool.CToken.DepositApyInfo.Apr = types.ToFloat64(supplyRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
+		lendingPool.CToken.DepositApyInfo.Apy = utils.Apr2Apy(lendingPool.CToken.DepositApyInfo.Apr)
 		// borrow apy
 		borrowRatePerSecond, err := qitoken.BorrowRatePerTimestamp(nil)
 		if err != nil {
 			continue
 		}
-		lendPool.CToken.BorrowApyInfo.Apr = types.ToFloat64(borrowRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
-		lendPool.CToken.BorrowApyInfo.Apy = utils.Apr2Apy(lendPool.CToken.BorrowApyInfo.Apr)
+		lendingPool.CToken.BorrowApyInfo.Apr = types.ToFloat64(borrowRatePerSecond) * math.Pow10(-18) * constants.SecondsPerYear
+		lendingPool.CToken.BorrowApyInfo.Apy = utils.Apr2Apy(lendingPool.CToken.BorrowApyInfo.Apr)
 		// apy incentives
 		supplyReward0, err := comptroller.SupplyRewardSpeeds(nil, 0, ctoken)
 		if err != nil {
@@ -112,8 +112,8 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		if err != nil {
 			continue
 		}
-		totalBorrows := types.ToFloat64(totalBorrow) * math.Pow10(-*lendPool.UnderlyingBasic.Decimals)
-		totalSupply := types.ToFloat64(totalBorrow)*math.Pow10(-*lendPool.UnderlyingBasic.Decimals) + types.ToFloat64(cash)*math.Pow10(-*lendPool.UnderlyingBasic.Decimals)
+		totalBorrows := types.ToFloat64(totalBorrow) * math.Pow10(-*lendingPool.UnderlyingBasic.Decimals)
+		totalSupply := types.ToFloat64(totalBorrow)*math.Pow10(-*lendingPool.UnderlyingBasic.Decimals) + types.ToFloat64(cash)*math.Pow10(-*lendingPool.UnderlyingBasic.Decimals)
 		supplyAprIncentive := supplyRewardsPerYear / totalSupply / underlyingPriceUSD
 		borrowAprIncentive := borrowRewardsPerYear / totalBorrows / underlyingPriceUSD
 		if totalSupply == 0 {
@@ -122,12 +122,12 @@ func (prot *Protocol) updateBenqiLend(underlyings []string) error {
 		if totalBorrows == 0 {
 			borrowAprIncentive = 0
 		}
-		lendPool.CToken.DepositApyInfo.AprIncentive = supplyAprIncentive
-		lendPool.CToken.BorrowApyInfo.AprIncentive = borrowAprIncentive
-		lendPool.CToken.DepositApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.CToken.DepositApyInfo.AprIncentive)
-		lendPool.CToken.BorrowApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.CToken.BorrowApyInfo.AprIncentive)
+		lendingPool.CToken.DepositApyInfo.AprIncentive = supplyAprIncentive
+		lendingPool.CToken.BorrowApyInfo.AprIncentive = borrowAprIncentive
+		lendingPool.CToken.DepositApyInfo.ApyIncentive = utils.Apr2Apy(lendingPool.CToken.DepositApyInfo.AprIncentive)
+		lendingPool.CToken.BorrowApyInfo.ApyIncentive = utils.Apr2Apy(lendingPool.CToken.BorrowApyInfo.AprIncentive)
 
-		prot.LendPools = append(prot.LendPools, &lendPool)
+		prot.LendingPools = append(prot.LendingPools, &lendingPool)
 	}
 	return nil
 }

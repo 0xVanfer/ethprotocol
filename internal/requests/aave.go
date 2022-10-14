@@ -8,16 +8,16 @@ import (
 	"github.com/imroc/req"
 )
 
-type aaveV2LendPoolsReq struct {
+type aaveV2LendingPoolsReq struct {
 	Data struct {
-		Reserves []aaveV2LendPoolInfo `json:"reserves"`
+		Reserves []aaveV2LendingPoolInfo `json:"reserves"`
 	} `json:"data"`
 }
 type aaveAToken struct {
 	ID string `json:"id"`
 }
 
-type aaveV2LendPoolInfo struct {
+type aaveV2LendingPoolInfo struct {
 	Symbol             string     `json:"symbol"`
 	Decimals           int        `json:"decimals"`
 	UnderlyingAsset    string     `json:"underlyingAsset"`
@@ -33,7 +33,7 @@ type aaveV2LendPoolInfo struct {
 }
 
 // Return aava v2 lend pools info.
-func ReqAaveV2LendPools(network string) ([]aaveV2LendPoolInfo, error) {
+func ReqAaveV2LendingPools(network string) ([]aaveV2LendingPoolInfo, error) {
 	var url string
 	switch network {
 	case chainId.AvalancheChainName:
@@ -47,7 +47,7 @@ func ReqAaveV2LendPools(network string) ([]aaveV2LendPoolInfo, error) {
 	}
 	payload := strings.NewReader(`{"query":"{\n reserves {\n symbol\n decimals\n underlyingAsset\n aToken{id}\n vToken{id}\n sToken{id}\n liquidityRate\n stableBorrowRate\n variableBorrowRate\n aEmissionPerSecond\n vEmissionPerSecond\n sEmissionPerSecond\n}\n}\n\n"}`)
 	r, _ := req.Post(url, payload)
-	var v aaveV2LendPoolsReq
+	var v aaveV2LendingPoolsReq
 	err := r.ToJSON(&v)
 	return v.Data.Reserves, err
 }

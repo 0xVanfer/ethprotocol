@@ -6,12 +6,12 @@ github.com/0xVanfer/coingecko v0.1.2 h1:9023GrxRyBrh+2DWxNvIW+Dv1yIscCVjCo+WTN2d
 github.com/0xVanfer/coingecko v0.1.2/go.mod h1:imy8PZn/TS/oFill7k6Hk36zfS//2RLVB0j9RyyqHFQ=
 github.com/0xVanfer/erc v0.5.4 h1:wnQKbRhMW/OVs4PADRfmNuC5RQREc1AwzWYKRxzbIfc=
 github.com/0xVanfer/erc v0.5.4/go.mod h1:FAFRu0h2pY/G46kpGXOerikLUdVr9NgG5SZj/HQnck8=
-github.com/0xVanfer/ethaddr v0.3.0 h1:yqF9WOhi5vG5e/qzas6kjATW16IyZGcphSdot+WL4oA=
-github.com/0xVanfer/ethaddr v0.3.0/go.mod h1:poK3rnQVctQXepPMMxjyoRUiaICBxoIxkjWo0wzjAdk=
+github.com/0xVanfer/ethaddr v0.3.3 h1:UnKQpn8BQic6k4L8YZom+MjDAZFmgG2hNMzcieoSKls=
+github.com/0xVanfer/ethaddr v0.3.3/go.mod h1:poK3rnQVctQXepPMMxjyoRUiaICBxoIxkjWo0wzjAdk=
 github.com/0xVanfer/types v0.1.2 h1:86pFlkOvag5GLYknovhsL277pDiIoNor2e3yDBt7tRw=
 github.com/0xVanfer/types v0.1.2/go.mod h1:8QSGeOQOStzyb8kAZXRVnxJLOJVMqI16lO/a+OBXFOc=
-github.com/0xVanfer/utils v0.0.6 h1:rdnr4EzwIiRGHyXAG4Eos2cMc4i1U52sFbq2Y91nZ68=
-github.com/0xVanfer/utils v0.0.6/go.mod h1:wWhqMc9+iw422XE4IzcJGeVif1qu1KB455lvpinA6nQ=
+github.com/0xVanfer/utils v0.0.8 h1:+RxPt3T0qGZIpmE9QJsojfQ/tA1tvjOt/mDDCddmZ+Q=
+github.com/0xVanfer/utils v0.0.8/go.mod h1:O22pT3OF9BdVMFD/q+084mPqnOaSdk1l2FukvTp7cF8=
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 h1:fLjPD/aNc3UIOA6tDi6QXUemppXK3P9BI7mr2hd6gx8=
 github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/VictoriaMetrics/fastcache v1.6.0 h1:C/3Oi3EiBCqufydp1neRZkqcwmEiuRT9c3fqvvgKm5o=
@@ -86,6 +86,10 @@ golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a h1:dGzPydgVsqGcTRVwiLJ1jVbuf
 golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/text v0.3.7 h1:olpwvP2KacW1ZWvsR7uQhoyTYvKAupfQrRGBFM352Gk=
 golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba h1:O8mE0/t419eoIwhTFpKVkHiTs/Igowgfkj25AcZrtiE=
+gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc h1:2gGKlE2+asNV9m7xrywl36YYNnBG5ZQ0r/BOOxqPpmk=
+gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc/go.mod h1:m7x9LTH6d71AHyAX77c9yqWCCa3UKHcVEj9y7hAtKDk=
+gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df h1:n7WqCuqOuCbNr617RXOY0AWRXxgwEyPp2z+p0+hgMuE=
+gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df/go.mod h1:LRQQ+SO6ZHR7tOkpBDuZnXENFzX8qRjMDMyPD6BRkCw=
 gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce h1:+JknDZhAj8YMt7GC73Ei8pv4MzjDUNPHgQWJdtMAaDU=
 gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce/go.mod h1:5AcXVHNjg+BDxry382+8OKon8SEWiKktQR07RKPsv1c=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=

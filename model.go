@@ -2,7 +2,7 @@ package ethprotocol
 
 import (
 	"github.com/0xVanfer/coingecko"
-	"github.com/0xVanfer/ethprotocol/lend"
+	"github.com/0xVanfer/ethprotocol/lending"
 	"github.com/0xVanfer/ethprotocol/liquidity"
 	"github.com/0xVanfer/ethprotocol/model"
 	"github.com/0xVanfer/ethprotocol/stake"
@@ -13,7 +13,7 @@ type Protocol struct {
 	ProtocolBasic  *model.ProtocolBasic
 	LiquidityPools []*liquidity.LiquidityPool
 	StakePools     []*stake.StakePool
-	LendPools      []*lend.LendPool
+	LendingPools   []*lending.LendingPool
 }
 
 type ProtocolInput struct {

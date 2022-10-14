@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/0xVanfer/ethaddr"
-	"github.com/0xVanfer/ethprotocol/lend"
+	"github.com/0xVanfer/ethprotocol/lending"
 )
 
 // Update some of the protocol's lend pools apys by given underlying addresses.
@@ -41,12 +41,12 @@ func (prot *Protocol) UpdateLendApys(underlyings ...string) error {
 // Update lend pools' params.
 //
 // params: map[underlying address] = pool params.
-func (prot *Protocol) UpdateLendParams(params map[string]lend.LendPoolParams) error {
+func (prot *Protocol) UpdateLendParams(params map[string]lending.LendingPoolParams) error {
 	// protocol basic must be initialized
 	if !prot.ProtocolBasic.Regularcheck() {
 		return errors.New("protocol basic must be initialized")
 	}
-	for _, pool := range prot.LendPools {
+	for _, pool := range prot.LendingPools {
 		for underlying, param := range params {
 			if strings.EqualFold(*pool.UnderlyingBasic.Address, underlying) {
 				pool.UpdatePoolParams(param)

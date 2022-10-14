@@ -1,4 +1,4 @@
-package lendtoken
+package lendingtoken
 
 import (
 	"errors"
@@ -22,7 +22,10 @@ func (t *CToken) GetUnderlyingAddress(ctoken string) (string, error) {
 	if !t.ProtocolBasic.Regularcheck() {
 		return "", errors.New("c token protocol basic must be initialized")
 	}
-	cList := ethaddr.CompoundLikeCTokenListMap[t.ProtocolBasic.ProtocolName]
+	cList := *ethaddr.CompoundLikeCTokenListMap[t.ProtocolBasic.ProtocolName]
+	if cList == nil {
+		return "", errors.New(t.ProtocolBasic.ProtocolName + " not supported on " + t.ProtocolBasic.Network)
+	}
 	for underlying, ctokenAddress := range cList[t.ProtocolBasic.Network] {
 		if strings.EqualFold(ctokenAddress, ctoken) {
 			return underlying, nil
@@ -36,7 +39,7 @@ func (t *CToken) UpdateCTokenByUnderlying(underlying string) error {
 	if !t.ProtocolBasic.Regularcheck() {
 		return errors.New("c token protocol basic must be initialized")
 	}
-	ctoken := ethaddr.CompoundLikeCTokenListMap[t.ProtocolBasic.ProtocolName][t.ProtocolBasic.Network][underlying]
+	ctoken := (*ethaddr.CompoundLikeCTokenListMap[t.ProtocolBasic.ProtocolName])[t.ProtocolBasic.Network][underlying]
 	var newBasic erc.ERC20Info
 	err := newBasic.Init(ctoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {

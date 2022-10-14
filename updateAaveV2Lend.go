@@ -8,7 +8,7 @@ import (
 	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/ethprotocol/internal/constants"
 	"github.com/0xVanfer/ethprotocol/internal/requests"
-	"github.com/0xVanfer/ethprotocol/lend"
+	"github.com/0xVanfer/ethprotocol/lending"
 	"github.com/0xVanfer/types"
 	"github.com/0xVanfer/utils"
 )
@@ -27,7 +27,7 @@ func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
 	if err != nil {
 		return err
 	}
-	poolsInfo, err := requests.ReqAaveV2LendPools(network)
+	poolsInfo, err := requests.ReqAaveV2LendingPools(network)
 	if err != nil {
 		return err
 	}
@@ -45,57 +45,57 @@ func (prot *Protocol) updateAaveV2Lend(underlyings []string) error {
 			}
 		}
 		// new a pool
-		var lendPool lend.LendPool
-		err = lendPool.Init(*prot.ProtocolBasic)
+		var lendingPool lending.LendingPool
+		err = lendingPool.Init(*prot.ProtocolBasic)
 		if err != nil {
 			return err // must be fatal error
 		}
-		err = lendPool.UpdateTokensByUnderlying(underlyingAddress)
+		err = lendingPool.UpdateTokensByUnderlying(underlyingAddress)
 		if err != nil {
 			return err
 		}
 		// avs apr
-		lendPool.AToken.ApyInfo.Apr = types.ToFloat64(poolInfo.LiquidityRate) * math.Pow10(-27)
-		lendPool.VToken.ApyInfo.Apr = types.ToFloat64(poolInfo.VariableBorrowRate) * math.Pow10(-27)
-		lendPool.SToken.ApyInfo.Apr = types.ToFloat64(poolInfo.StableBorrowRate) * math.Pow10(-27)
+		lendingPool.AToken.ApyInfo.Apr = types.ToFloat64(poolInfo.LiquidityRate) * math.Pow10(-27)
+		lendingPool.VToken.ApyInfo.Apr = types.ToFloat64(poolInfo.VariableBorrowRate) * math.Pow10(-27)
+		lendingPool.SToken.ApyInfo.Apr = types.ToFloat64(poolInfo.StableBorrowRate) * math.Pow10(-27)
 
 		// avax apr incentive
-		underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendPool.UnderlyingBasic.Symbol, network, "usd")
+		underlyingPriceUSD, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(*lendingPool.UnderlyingBasic.Symbol, network, "usd")
 		if err != nil {
 			continue
 		}
 		aEmissionUSD := types.ToFloat64(poolInfo.AEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
-		if lendPool.AToken.Basic == nil {
+		if lendingPool.AToken.Basic == nil {
 			fmt.Println("atoken of", underlyingAddress, "not found")
 			continue
 		}
-		aSupply, err := lendPool.AToken.Basic.TotalSupply()
+		aSupply, err := lendingPool.AToken.Basic.TotalSupply()
 		if err != nil {
 			continue
 		}
 		aSupplyUSD := aSupply * underlyingPriceUSD
-		lendPool.AToken.ApyInfo.AprIncentive = aEmissionUSD / aSupplyUSD
+		lendingPool.AToken.ApyInfo.AprIncentive = aEmissionUSD / aSupplyUSD
 
 		vEmissionUSD := types.ToFloat64(poolInfo.VEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
-		if lendPool.VToken.Basic == nil {
+		if lendingPool.VToken.Basic == nil {
 			fmt.Println("vtoken of", underlyingAddress, "not found")
 			continue
 		}
-		vSupply, err := lendPool.VToken.Basic.TotalSupply()
+		vSupply, err := lendingPool.VToken.Basic.TotalSupply()
 		if err != nil {
 			continue
 		}
 		vSupplyUSD := vSupply * underlyingPriceUSD
-		lendPool.VToken.ApyInfo.AprIncentive = vEmissionUSD / vSupplyUSD
+		lendingPool.VToken.ApyInfo.AprIncentive = vEmissionUSD / vSupplyUSD
 
 		// apr 2 apy
-		lendPool.AToken.ApyInfo.Apy = utils.Apr2Apy(lendPool.AToken.ApyInfo.Apr)
-		lendPool.VToken.ApyInfo.Apy = utils.Apr2Apy(lendPool.VToken.ApyInfo.Apr)
-		lendPool.SToken.ApyInfo.Apy = utils.Apr2Apy(lendPool.VToken.ApyInfo.Apr)
-		lendPool.AToken.ApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
-		lendPool.VToken.ApyInfo.ApyIncentive = utils.Apr2Apy(lendPool.AToken.ApyInfo.AprIncentive)
+		lendingPool.AToken.ApyInfo.Apy = utils.Apr2Apy(lendingPool.AToken.ApyInfo.Apr)
+		lendingPool.VToken.ApyInfo.Apy = utils.Apr2Apy(lendingPool.VToken.ApyInfo.Apr)
+		lendingPool.SToken.ApyInfo.Apy = utils.Apr2Apy(lendingPool.VToken.ApyInfo.Apr)
+		lendingPool.AToken.ApyInfo.ApyIncentive = utils.Apr2Apy(lendingPool.AToken.ApyInfo.AprIncentive)
+		lendingPool.VToken.ApyInfo.ApyIncentive = utils.Apr2Apy(lendingPool.AToken.ApyInfo.AprIncentive)
 
-		prot.LendPools = append(prot.LendPools, &lendPool)
+		prot.LendingPools = append(prot.LendingPools, &lendingPool)
 	}
 	return nil
 }

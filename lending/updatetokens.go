@@ -1,4 +1,4 @@
-package lend
+package lending
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 )
 
 // Update pool tokens info by underlying token.
-func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
+func (p *LendingPool) UpdateTokensByUnderlying(underlying string) error {
 	if !p.ProtocolBasic.Regularcheck() {
 		return errors.New("lend pool protocol basic must be initialized")
 	}
@@ -42,7 +42,7 @@ func (p *LendPool) UpdateTokensByUnderlying(underlying string) error {
 }
 
 // Update pool tokens info by a token.
-func (p *LendPool) UpdateTokensByAToken(atoken string) error {
+func (p *LendingPool) UpdateTokensByAToken(atoken string) error {
 	p.AToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.AToken.GetUnderlyingAddress(atoken)
 	if err != nil {
@@ -52,7 +52,7 @@ func (p *LendPool) UpdateTokensByAToken(atoken string) error {
 }
 
 // Update pool tokens info by v token.
-func (p *LendPool) UpdateTokensByVToken(vtoken string) error {
+func (p *LendingPool) UpdateTokensByVToken(vtoken string) error {
 	p.VToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.VToken.GetUnderlyingAddress(vtoken)
 	if err != nil {
@@ -62,7 +62,7 @@ func (p *LendPool) UpdateTokensByVToken(vtoken string) error {
 }
 
 // Update pool tokens info by s token.
-func (p *LendPool) UpdateTokensBySToken(stoken string) error {
+func (p *LendingPool) UpdateTokensBySToken(stoken string) error {
 	p.SToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.SToken.GetUnderlyingAddress(stoken)
 	if err != nil {
@@ -72,7 +72,7 @@ func (p *LendPool) UpdateTokensBySToken(stoken string) error {
 }
 
 // Update pool tokens info by c token.
-func (p *LendPool) UpdateTokensByCToken(ctoken string) error {
+func (p *LendingPool) UpdateTokensByCToken(ctoken string) error {
 	p.CToken.ProtocolBasic = p.ProtocolBasic
 	underlyingAddress, err := p.CToken.GetUnderlyingAddress(ctoken)
 	if err != nil {
