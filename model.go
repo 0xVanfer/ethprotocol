@@ -2,6 +2,7 @@ package ethprotocol
 
 import (
 	"github.com/0xVanfer/coingecko"
+	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/lending"
 	"github.com/0xVanfer/ethprotocol/liquidity"
 	"github.com/0xVanfer/ethprotocol/model"
@@ -21,4 +22,17 @@ type ProtocolInput struct {
 	Name      string               // Name of the protocol, given by github.com/0xVanfer/ethaddr.
 	Client    bind.ContractBackend // Contract backend to call the contracts. Can be nil, but most functions will not work properly.
 	Coingecko coingecko.Gecko      // Coingecko. Can also input the key only.
+}
+
+// Return protocol token according to network.
+func (p *Protocol) Token() string {
+	if !p.ProtocolBasic.Regularcheck() {
+		return ""
+	}
+	// not supported protocol name
+	tokenList := ethaddr.ProtocolTokenListMap[p.ProtocolBasic.ProtocolName]
+	if tokenList == nil {
+		return ""
+	}
+	return tokenList[p.ProtocolBasic.Network]
 }

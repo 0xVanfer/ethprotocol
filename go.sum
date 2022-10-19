@@ -2,12 +2,12 @@ github.com/0xVanfer/abigen v0.1.4 h1:vTBQsPllBjwhQu5r/EydOGDO4kKjJHnMxAOvPFivwnk
 github.com/0xVanfer/abigen v0.1.4/go.mod h1:uOU++SxhSl43YMgOYutXM+MpjQzViQtsn8B+LID5xhY=
 github.com/0xVanfer/chainId v0.1.1 h1:aQrBUm45j02lIWe2nOha4woJUPMucFLmxJ3TIimPUQM=
 github.com/0xVanfer/chainId v0.1.1/go.mod h1:YgJHKMKd0J+3VGCoBMjaVE5GUdwQz5Ud585Pr9vEg40=
-github.com/0xVanfer/coingecko v0.1.2 h1:9023GrxRyBrh+2DWxNvIW+Dv1yIscCVjCo+WTN2djWQ=
-github.com/0xVanfer/coingecko v0.1.2/go.mod h1:imy8PZn/TS/oFill7k6Hk36zfS//2RLVB0j9RyyqHFQ=
+github.com/0xVanfer/coingecko v0.1.3 h1:AsHWPodqZNYMi0G4HRFCHjNORBnf18Vybh8St3GeV5s=
+github.com/0xVanfer/coingecko v0.1.3/go.mod h1:4NAAaMQKDeUR1CmDImVjAQZg/n1VrL0WAaaN5KiVTD0=
 github.com/0xVanfer/erc v0.5.4 h1:wnQKbRhMW/OVs4PADRfmNuC5RQREc1AwzWYKRxzbIfc=
 github.com/0xVanfer/erc v0.5.4/go.mod h1:FAFRu0h2pY/G46kpGXOerikLUdVr9NgG5SZj/HQnck8=
-github.com/0xVanfer/ethaddr v0.3.3 h1:UnKQpn8BQic6k4L8YZom+MjDAZFmgG2hNMzcieoSKls=
-github.com/0xVanfer/ethaddr v0.3.3/go.mod h1:poK3rnQVctQXepPMMxjyoRUiaICBxoIxkjWo0wzjAdk=
+github.com/0xVanfer/ethaddr v0.3.5 h1:/9Baun+6soAW0U3U0OP1Olfr47l09bwV5lVjV4VjLME=
+github.com/0xVanfer/ethaddr v0.3.5/go.mod h1:poK3rnQVctQXepPMMxjyoRUiaICBxoIxkjWo0wzjAdk=
 github.com/0xVanfer/types v0.1.2 h1:86pFlkOvag5GLYknovhsL277pDiIoNor2e3yDBt7tRw=
 github.com/0xVanfer/types v0.1.2/go.mod h1:8QSGeOQOStzyb8kAZXRVnxJLOJVMqI16lO/a+OBXFOc=
 github.com/0xVanfer/utils v0.0.8 h1:+RxPt3T0qGZIpmE9QJsojfQ/tA1tvjOt/mDDCddmZ+Q=

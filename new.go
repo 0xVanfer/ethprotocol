@@ -37,5 +37,10 @@ func New(input ProtocolInput) (*Protocol, error) {
 	protocol := Protocol{
 		ProtocolBasic: &ProtocolBasic,
 	}
+	// lending tokens
+	err := protocol.UpdateLendingPoolTokens()
+	if err != nil {
+		return &protocol, err
+	}
 	return &protocol, nil
 }
