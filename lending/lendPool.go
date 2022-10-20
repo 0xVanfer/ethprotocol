@@ -10,15 +10,17 @@ import (
 
 // Initialize the lend pool protocol basic and pool type.
 func (p *LendingPool) Init(protocolBasic model.ProtocolBasic) error {
+	// regular check
+	if !protocolBasic.Regularcheck() {
+		return errors.New("protocol basic must not be initialized")
+	}
+	// decide the pool type
 	if utils.ContainInArrayX(protocolBasic.ProtocolName, ethaddr.AaveLikeProtocols) {
 		p.PoolType = LendingPoolType{IsAaveLike: true}
 	} else if utils.ContainInArrayX(protocolBasic.ProtocolName, ethaddr.CompoundLikeProtocols) {
 		p.PoolType = LendingPoolType{IsCompoundLike: true}
 	} else {
 		return errors.New("protocol not supported lend pool")
-	}
-	if protocolBasic.Network == "" {
-		return errors.New("network must not be empty")
 	}
 	p.ProtocolBasic = &protocolBasic
 	return nil

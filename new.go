@@ -15,7 +15,7 @@ func New(input ProtocolInput) (*Protocol, error) {
 	var gecko *coingecko.Gecko
 
 	if input.Coingecko.TokenList != nil {
-		// already initiated
+		// already initialized
 		gecko = &input.Coingecko
 	} else {
 		//  use key to initiate
