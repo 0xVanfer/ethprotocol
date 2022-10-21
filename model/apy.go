@@ -8,10 +8,8 @@ import (
 //
 // Use 0.01 for 1%
 type ApyInfo struct {
-	TotalApyIncentive float64    // total incentive rewards
-	TotalAprIncentive float64    // total incentive rewards
-	Base              *ApyBase   // basic rewards details
-	Incentive         []*ApyBase // incentive rewards(some protocols may have various incentive reward tokens)
+	Base      *ApyBase     // basic rewards details
+	Incentive ApyIncentive // incentive rewards(some protocols may have various incentive reward tokens)
 }
 
 type ApyBase struct {
@@ -19,4 +17,10 @@ type ApyBase struct {
 	Apr          float64
 	RewardToken  *erc.ERC20Info
 	IsChainToken bool
+}
+
+type ApyIncentive struct {
+	TotalApyIncentive float64 // total incentive rewards
+	TotalAprIncentive float64 // total incentive rewards
+	Details           []*ApyBase
 }

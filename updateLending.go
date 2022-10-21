@@ -143,7 +143,7 @@ func (prot *Protocol) updateAaveV2LendingApy(underlyings []string) error {
 				continue
 			}
 			aSupplyUSD := aSupply * underlyingPriceUSD
-			lendingPool.AToken.ApyInfo.TotalAprIncentive = aEmissionUSD / aSupplyUSD
+			lendingPool.AToken.ApyInfo.Incentive.TotalAprIncentive = aEmissionUSD / aSupplyUSD
 
 			vEmissionUSD := types.ToFloat64(poolInfo.VEmissionPerSecond) * constants.SecondsPerYear * chainTokenPrice * math.Pow10(-18)
 			if lendingPool.VToken.Basic == nil {
@@ -155,14 +155,14 @@ func (prot *Protocol) updateAaveV2LendingApy(underlyings []string) error {
 				continue
 			}
 			vSupplyUSD := vSupply * underlyingPriceUSD
-			lendingPool.VToken.ApyInfo.TotalAprIncentive = vEmissionUSD / vSupplyUSD
+			lendingPool.VToken.ApyInfo.Incentive.TotalAprIncentive = vEmissionUSD / vSupplyUSD
 
 			// apr 2 apy
 			lendingPool.AToken.ApyInfo.Base.Apy = utils.Apr2Apy(lendingPool.AToken.ApyInfo.Base.Apr)
 			lendingPool.VToken.ApyInfo.Base.Apy = utils.Apr2Apy(lendingPool.VToken.ApyInfo.Base.Apr)
 			lendingPool.SToken.ApyInfo.Base.Apy = utils.Apr2Apy(lendingPool.VToken.ApyInfo.Base.Apr)
-			lendingPool.AToken.ApyInfo.TotalApyIncentive = utils.Apr2Apy(lendingPool.AToken.ApyInfo.TotalAprIncentive)
-			lendingPool.VToken.ApyInfo.TotalApyIncentive = utils.Apr2Apy(lendingPool.AToken.ApyInfo.TotalAprIncentive)
+			lendingPool.AToken.ApyInfo.Incentive.TotalApyIncentive = utils.Apr2Apy(lendingPool.AToken.ApyInfo.Incentive.TotalAprIncentive)
+			lendingPool.VToken.ApyInfo.Incentive.TotalApyIncentive = utils.Apr2Apy(lendingPool.AToken.ApyInfo.Incentive.TotalAprIncentive)
 
 			// status todo
 			lendingPool.Status.TotalSupply = types.ToFloat64(poolInfo.TotalDeposits) * math.Pow10(-poolInfo.Decimals)
@@ -239,7 +239,7 @@ func (prot *Protocol) updateAaveV3LendingApy(underlyings []string) error {
 					if aSupplyUSD == 0 {
 						apy = 0
 					}
-					lendingPool.AToken.ApyInfo.TotalApyIncentive += apy
+					lendingPool.AToken.ApyInfo.Incentive.TotalApyIncentive += apy
 				}
 
 				vSupply, _ := lendingPool.VToken.Basic.TotalSupply()
@@ -255,10 +255,10 @@ func (prot *Protocol) updateAaveV3LendingApy(underlyings []string) error {
 					if vSupplyUSD == 0 {
 						apy = 0
 					}
-					lendingPool.VToken.ApyInfo.TotalApyIncentive += apy
+					lendingPool.VToken.ApyInfo.Incentive.TotalApyIncentive += apy
 				}
-				lendingPool.AToken.ApyInfo.TotalAprIncentive = utils.Apy2Apr(lendingPool.AToken.ApyInfo.TotalApyIncentive)
-				lendingPool.VToken.ApyInfo.TotalAprIncentive = utils.Apy2Apr(lendingPool.VToken.ApyInfo.TotalApyIncentive)
+				lendingPool.AToken.ApyInfo.Incentive.TotalAprIncentive = utils.Apy2Apr(lendingPool.AToken.ApyInfo.Incentive.TotalApyIncentive)
+				lendingPool.VToken.ApyInfo.Incentive.TotalAprIncentive = utils.Apy2Apr(lendingPool.VToken.ApyInfo.Incentive.TotalApyIncentive)
 			}
 
 			// status
@@ -349,7 +349,7 @@ func (prot *Protocol) updateAaveV3LendingApyPolygon(underlyings []string) error 
 					if aSupplyUSD == 0 {
 						apy = 0
 					}
-					lendingPool.AToken.ApyInfo.TotalApyIncentive += apy
+					lendingPool.AToken.ApyInfo.Incentive.TotalApyIncentive += apy
 				}
 
 				vSupply, _ := lendingPool.VToken.Basic.TotalSupply()
@@ -365,10 +365,10 @@ func (prot *Protocol) updateAaveV3LendingApyPolygon(underlyings []string) error 
 					if vSupplyUSD == 0 {
 						apy = 0
 					}
-					lendingPool.VToken.ApyInfo.TotalApyIncentive += apy
+					lendingPool.VToken.ApyInfo.Incentive.TotalApyIncentive += apy
 				}
-				lendingPool.AToken.ApyInfo.TotalAprIncentive = utils.Apy2Apr(lendingPool.AToken.ApyInfo.TotalApyIncentive)
-				lendingPool.VToken.ApyInfo.TotalAprIncentive = utils.Apy2Apr(lendingPool.VToken.ApyInfo.TotalApyIncentive)
+				lendingPool.AToken.ApyInfo.Incentive.TotalAprIncentive = utils.Apy2Apr(lendingPool.AToken.ApyInfo.Incentive.TotalApyIncentive)
+				lendingPool.VToken.ApyInfo.Incentive.TotalAprIncentive = utils.Apy2Apr(lendingPool.VToken.ApyInfo.Incentive.TotalApyIncentive)
 			}
 
 			// status
@@ -510,10 +510,10 @@ func (prot *Protocol) updateBenqiLendingApy(underlyings []string) error {
 			if totalBorrows == 0 {
 				borrowAprIncentive = 0
 			}
-			lendingPool.CToken.DepositApyInfo.TotalAprIncentive = supplyAprIncentive
-			lendingPool.CToken.BorrowApyInfo.TotalAprIncentive = borrowAprIncentive
-			lendingPool.CToken.DepositApyInfo.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.DepositApyInfo.TotalAprIncentive)
-			lendingPool.CToken.BorrowApyInfo.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.BorrowApyInfo.TotalAprIncentive)
+			lendingPool.CToken.DepositApyInfo.Incentive.TotalAprIncentive = supplyAprIncentive
+			lendingPool.CToken.BorrowApyInfo.Incentive.TotalAprIncentive = borrowAprIncentive
+			lendingPool.CToken.DepositApyInfo.Incentive.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.DepositApyInfo.Incentive.TotalAprIncentive)
+			lendingPool.CToken.BorrowApyInfo.Incentive.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.BorrowApyInfo.Incentive.TotalAprIncentive)
 
 			// status
 			lendingPool.Status.TotalSupply = totalSupply
@@ -526,7 +526,7 @@ func (prot *Protocol) updateBenqiLendingApy(underlyings []string) error {
 
 // Internal use only! No protocol regular check!
 //
-// Update compound-like lend pools by underlyings.
+// Update traderjoe lend pools by underlyings.
 func (prot *Protocol) updateTraderjoeLendingApy(underlyings []string) error {
 	network := prot.ProtocolBasic.Network
 	if !utils.ContainInArrayX(network, []string{chainId.AvalancheChainName}) {
@@ -612,10 +612,10 @@ func (prot *Protocol) updateTraderjoeLendingApy(underlyings []string) error {
 			if totalBorrows == 0 {
 				borrowAprIncentive = 0
 			}
-			lendingPool.CToken.DepositApyInfo.TotalAprIncentive = supplyAprIncentive
-			lendingPool.CToken.BorrowApyInfo.TotalAprIncentive = borrowAprIncentive
-			lendingPool.CToken.DepositApyInfo.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.DepositApyInfo.TotalAprIncentive)
-			lendingPool.CToken.BorrowApyInfo.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.BorrowApyInfo.TotalAprIncentive)
+			lendingPool.CToken.DepositApyInfo.Incentive.TotalAprIncentive = supplyAprIncentive
+			lendingPool.CToken.BorrowApyInfo.Incentive.TotalAprIncentive = borrowAprIncentive
+			lendingPool.CToken.DepositApyInfo.Incentive.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.DepositApyInfo.Incentive.TotalAprIncentive)
+			lendingPool.CToken.BorrowApyInfo.Incentive.TotalApyIncentive = utils.Apr2Apy(lendingPool.CToken.BorrowApyInfo.Incentive.TotalAprIncentive)
 
 			// status
 			lendingPool.Status.TotalSupply = totalSupply

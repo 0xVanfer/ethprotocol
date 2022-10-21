@@ -14,30 +14,30 @@ type aaveV2LendingPoolsReq struct {
 	} `json:"data"`
 }
 type aaveAToken struct {
-	ID string `json:"id"`
+	ID string `json:"id"` // token address
 }
 
 type aaveV2LendingPoolInfo struct {
-	Symbol                     string     `json:"symbol"`
-	Decimals                   int        `json:"decimals"`
-	UnderlyingAsset            string     `json:"underlyingAsset"`
-	AToken                     aaveAToken `json:"aToken"`
-	VToken                     aaveAToken `json:"vToken"`
-	SToken                     aaveAToken `json:"sToken"`
-	LiquidityRate              string     `json:"liquidityRate"`
-	StableBorrowRate           string     `json:"stableBorrowRate"`
-	VariableBorrowRate         string     `json:"variableBorrowRate"`
-	AEmissionPerSecond         string     `json:"aEmissionPerSecond"`
-	VEmissionPerSecond         string     `json:"vEmissionPerSecond"`
-	SEmissionPerSecond         string     `json:"sEmissionPerSecond"`
-	ReserveFactor              string     `json:"reserveFactor"`
-	TotalDeposits              string     `json:"totalDeposits"`
-	TotalLiquidity             string     `json:"totalLiquidity"`
-	TotalScaledVariableDebt    string     `json:"totalScaledVariableDebt"`
-	TotalPrincipalStableDebt   string     `json:"totalPrincipalStableDebt"`
-	TotalCurrentVariableDebt   string     `json:"totalCurrentVariableDebt"`
-	TotalLiquidityAsCollateral string     `json:"totalLiquidityAsCollateral"`
-	UtilizationRate            string     `json:"utilizationRate"`
+	Symbol                     string     `json:"symbol"`                     // underlying symbol
+	Decimals                   int        `json:"decimals"`                   // underlying decimals
+	UnderlyingAsset            string     `json:"underlyingAsset"`            // underlying address
+	AToken                     aaveAToken `json:"aToken"`                     // atoken
+	VToken                     aaveAToken `json:"vToken"`                     // vtoken
+	SToken                     aaveAToken `json:"sToken"`                     // stoken
+	LiquidityRate              string     `json:"liquidityRate"`              // in RAY. a basic reward rate
+	StableBorrowRate           string     `json:"stableBorrowRate"`           // in RAY. s basic borrow rate
+	VariableBorrowRate         string     `json:"variableBorrowRate"`         // in RAY. v basic borrow rate
+	AEmissionPerSecond         string     `json:"aEmissionPerSecond"`         // in WEI. a incentive reward rate
+	VEmissionPerSecond         string     `json:"vEmissionPerSecond"`         // in WEI. s incentive reward rate
+	SEmissionPerSecond         string     `json:"sEmissionPerSecond"`         // in WEI. v incentive reward rate
+	ReserveFactor              string     `json:"reserveFactor"`              // reserve factor
+	TotalDeposits              string     `json:"totalDeposits"`              // total deposited assets(might not accurate)
+	TotalLiquidity             string     `json:"totalLiquidity"`             // total avalable assets(might not accurate)
+	TotalScaledVariableDebt    string     `json:"totalScaledVariableDebt"`    // total v debt used by aave
+	TotalPrincipalStableDebt   string     `json:"totalPrincipalStableDebt"`   // total s debt
+	TotalCurrentVariableDebt   string     `json:"totalCurrentVariableDebt"`   // total v debt
+	TotalLiquidityAsCollateral string     `json:"totalLiquidityAsCollateral"` // total liquidity as collateral
+	UtilizationRate            string     `json:"utilizationRate"`            // utilization of the pool token, equals total borrowed/total deposited
 }
 
 // Return aava v2 lend pools info.
@@ -49,9 +49,7 @@ func ReqAaveV2LendingPools(network string) ([]aaveV2LendingPoolInfo, error) {
 	case chainId.EthereumChainName:
 		url = "https://api.thegraph.com/subgraphs/name/aave/protocol-v2"
 	default:
-		errString := "not supported network:" + network
-		err := errors.New(errString)
-		return nil, err
+		return nil, errors.New("not supported network:" + network)
 	}
 	payload := strings.NewReader(`{"query":"{\n reserves {\n symbol\n decimals\n underlyingAsset\n aToken{id}\n vToken{id}\n sToken{id}\n liquidityRate\n stableBorrowRate\n variableBorrowRate\n aEmissionPerSecond\n vEmissionPerSecond\n sEmissionPerSecond\n totalDeposits\n totalLiquidity\n totalScaledVariableDebt\n totalPrincipalStableDebt\n reserveFactor\n totalCurrentVariableDebt\n totalLiquidityAsCollateral\n utilizationRate\n}\n}\n\n"}`)
 	r, _ := req.Post(url, payload)
