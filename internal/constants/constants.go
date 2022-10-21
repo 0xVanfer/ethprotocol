@@ -4,7 +4,6 @@ const SecondsPerDay = 86400
 const SecondsPerYear = SecondsPerDay * 365
 
 var IgnoreSymbols = []string{
-	"dai",
 	"ot-qiusdc-28dec2023",
 	"ot-jlp-28dec2023",
 	"ot-qiavax-28dec2023",
