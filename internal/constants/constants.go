@@ -1,7 +1,12 @@
 package constants
 
-const SecondsPerDay = 86400
-const SecondsPerYear = SecondsPerDay * 365
+import "github.com/shopspring/decimal"
+
+var SecondsPerDay = decimal.New(86400, 0)
+var SecondsPerYear = SecondsPerDay.Mul(decimal.New(365, 0))
+
+var RAYUnit = decimal.New(1, 27)
+var WEIUnit = decimal.New(1, 18)
 
 var IgnoreSymbols = []string{
 	"ot-qiusdc-28dec2023",

@@ -4,6 +4,7 @@ import (
 	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethprotocol/lending/lendingtoken"
 	"github.com/0xVanfer/ethprotocol/model"
+	"github.com/shopspring/decimal"
 )
 
 type LendingPool struct {
@@ -24,24 +25,24 @@ type LendingPoolType struct {
 }
 
 type LendingPoolStatus struct {
-	CollateralFactor   float64 // The maximum of collateral factor.
-	LiquidationLimit   float64 // Liquidation will occur when liquidation limit is reached.
-	LiquidationPenalty float64 // Penalty when liquidation occurs.
-	AllowBorrow        bool    // If the token can be borrowed in this protocol.
-	AllowCollateral    bool    // If the token can be used as collateral in this protocol.
+	CollateralFactor   decimal.Decimal // The maximum of collateral factor.
+	LiquidationLimit   decimal.Decimal // Liquidation will occur when liquidation limit is reached.
+	LiquidationPenalty decimal.Decimal // Penalty when liquidation occurs.
+	AllowBorrow        bool            // If the token can be borrowed in this protocol.
+	AllowCollateral    bool            // If the token can be used as collateral in this protocol.
 
-	BorrowLimit     float64 // The borrow limit of the pool.
-	SupplyLimit     float64 // The supply limit of the pool.
-	SupplyCapacity  float64 // SupplyCapacity = SupplyLimit - TotalSupply.
-	TotalSupply     float64 // Total amount supplied into the pool.
-	TotalVBorrow    float64 // Total variable amount borrowed from the pool.
-	TotalSBorrow    float64 // Total stable amount borrowed from the pool.
-	TotalCBorrow    float64 // Total (compound like) amount borrowed from the pool.
-	UtilizationRate float64 // = TotalBorrow / TotalSupply
+	BorrowLimit     decimal.Decimal // The borrow limit of the pool.
+	SupplyLimit     decimal.Decimal // The supply limit of the pool.
+	SupplyCapacity  decimal.Decimal // SupplyCapacity = SupplyLimit - TotalSupply.
+	TotalSupply     decimal.Decimal // Total amount supplied into the pool.
+	TotalVBorrow    decimal.Decimal // Total variable amount borrowed from the pool.
+	TotalSBorrow    decimal.Decimal // Total stable amount borrowed from the pool.
+	TotalCBorrow    decimal.Decimal // Total (compound like) amount borrowed from the pool.
+	UtilizationRate decimal.Decimal // = TotalBorrow / TotalSupply
 
-	EModeCategoryId       int     // Aave v3 emode category id.
-	EModeCollateralFactor float64 // Aave v3 emode collateral factor.
-	EModeLiquidationLimit float64 // Aave v3 emode liquidation limit.
+	EModeCategoryId       int             // Aave v3 emode category id.
+	EModeCollateralFactor decimal.Decimal // Aave v3 emode collateral factor.
+	EModeLiquidationLimit decimal.Decimal // Aave v3 emode liquidation limit.
 
 	BorrowableInIsolation bool // Aave v3 isolation mode can be borrowed.
 }

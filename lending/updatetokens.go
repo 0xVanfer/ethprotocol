@@ -12,17 +12,16 @@ func (p *LendingPool) UpdateTokensByUnderlying(underlying string) error {
 		return errors.New("lend pool protocol basic must be initialized")
 	}
 	// underlying basic
-	var newUnderlying erc.ERC20Info
-	err := newUnderlying.Init(underlying, p.ProtocolBasic.Network, *p.ProtocolBasic.Client)
+	newUnderlying, err := erc.NewErc20(underlying, p.ProtocolBasic.Network, *p.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
-	p.UnderlyingBasic = &newUnderlying
+	p.UnderlyingBasic = newUnderlying
 	// avsc basic
 	if p.PoolType.IsAaveLike {
-		p.AToken.UnderlyingBasic = &newUnderlying
-		p.VToken.UnderlyingBasic = &newUnderlying
-		p.SToken.UnderlyingBasic = &newUnderlying
+		p.AToken.UnderlyingBasic = newUnderlying
+		p.VToken.UnderlyingBasic = newUnderlying
+		p.SToken.UnderlyingBasic = newUnderlying
 
 		p.AToken.ProtocolBasic = p.ProtocolBasic
 		p.VToken.ProtocolBasic = p.ProtocolBasic
@@ -33,7 +32,7 @@ func (p *LendingPool) UpdateTokensByUnderlying(underlying string) error {
 		_ = p.SToken.UpdateSTokenByUnderlying(underlying)
 	}
 	if p.PoolType.IsCompoundLike {
-		p.CToken.UnderlyingBasic = &newUnderlying
+		p.CToken.UnderlyingBasic = newUnderlying
 		p.CToken.ProtocolBasic = p.ProtocolBasic
 
 		_ = p.CToken.UpdateCTokenByUnderlying(underlying)

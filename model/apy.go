@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/0xVanfer/erc"
+	"github.com/shopspring/decimal"
 )
 
 // Apys of a token.
@@ -13,14 +14,14 @@ type ApyInfo struct {
 }
 
 type ApyBase struct {
-	Apy          float64
-	Apr          float64
+	Apy          decimal.Decimal
+	Apr          decimal.Decimal
 	RewardToken  *erc.ERC20Info
 	IsChainToken bool
 }
 
 type ApyIncentive struct {
-	TotalApyIncentive float64 // total incentive rewards
-	TotalAprIncentive float64 // total incentive rewards
+	TotalApyIncentive decimal.Decimal // total incentive rewards
+	TotalAprIncentive decimal.Decimal // total incentive rewards
 	Details           []*ApyBase
 }

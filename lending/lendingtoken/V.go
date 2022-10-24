@@ -36,11 +36,10 @@ func (t *VToken) UpdateVTokenByUnderlying(underlying string) error {
 		return errors.New("v token protocol basic must be initialized")
 	}
 	vtoken := (*ethaddr.AaveLikeVTokenListMap[t.ProtocolBasic.ProtocolName])[t.ProtocolBasic.Network][underlying]
-	var newBasic erc.ERC20Info
-	err := newBasic.Init(vtoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
+	newBasic, err := erc.NewErc20(vtoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
-	t.Basic = &newBasic
+	t.Basic = newBasic
 	return nil
 }

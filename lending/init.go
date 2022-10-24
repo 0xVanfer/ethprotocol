@@ -16,15 +16,6 @@ func (p *LendingPool) Init(protocolBasic model.ProtocolBasic) error {
 	}
 	p.ProtocolBasic = &protocolBasic
 
-	// // decide the pool type
-	// if utils.ContainInArrayX(protocolBasic.ProtocolName, ethaddr.AaveLikeProtocols) {
-	// 	p.PoolType = LendingPoolType{IsAaveLike: true}
-	// } else if utils.ContainInArrayX(protocolBasic.ProtocolName, ethaddr.CompoundLikeProtocols) {
-	// 	p.PoolType = LendingPoolType{IsCompoundLike: true}
-	// } else {
-	// 	return errors.New("protocol not supported lend pool")
-	// }
-
 	// decide network
 	switch protocolBasic.ProtocolName {
 	// aave v2

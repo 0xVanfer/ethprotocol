@@ -36,11 +36,10 @@ func (t *SToken) UpdateSTokenByUnderlying(underlying string) error {
 		return errors.New("s token protocol basic must be initialized")
 	}
 	stoken := (*ethaddr.AaveLikeSTokenListMap[t.ProtocolBasic.ProtocolName])[t.ProtocolBasic.Network][underlying]
-	var newBasic erc.ERC20Info
-	err := newBasic.Init(stoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
+	newBasic, err := erc.NewErc20(stoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
-	t.Basic = &newBasic
+	t.Basic = newBasic
 	return nil
 }

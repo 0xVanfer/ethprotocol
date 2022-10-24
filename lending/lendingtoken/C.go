@@ -40,11 +40,10 @@ func (t *CToken) UpdateCTokenByUnderlying(underlying string) error {
 		return errors.New("c token protocol basic must be initialized")
 	}
 	ctoken := (*ethaddr.CompoundLikeCTokenListMap[t.ProtocolBasic.ProtocolName])[t.ProtocolBasic.Network][underlying]
-	var newBasic erc.ERC20Info
-	err := newBasic.Init(ctoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
+	newBasic, err := erc.NewErc20(ctoken, t.ProtocolBasic.Network, *t.ProtocolBasic.Client)
 	if err != nil {
 		return err
 	}
-	t.Basic = &newBasic
+	t.Basic = newBasic
 	return nil
 }
