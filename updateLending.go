@@ -85,15 +85,11 @@ func (prot *Protocol) UpdateLendingApys(underlyings ...string) error {
 //
 // Update aave v2 lend pools by underlyings.
 func (prot *Protocol) updateAaveV2LendingApy(underlyings []string) error {
-	// every update apy func should check network
+	// check network
 	network := prot.ProtocolBasic.Network
-	supportedNetworks := []string{
-		chainId.AvalancheChainName,
-		chainId.EthereumChainName,
-	}
-	if !utils.ContainInArrayX(network, supportedNetworks) {
-		fmt.Println("Aave lend V2", network, "not supported.")
-		return nil
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
 	}
 
 	// chain token price
@@ -178,18 +174,15 @@ func (prot *Protocol) updateAaveV2LendingApy(underlyings []string) error {
 //
 // Update aave v3 lend pools by underlyings.
 func (prot *Protocol) updateAaveV3LendingApy(underlyings []string) error {
+	// check network
 	network := prot.ProtocolBasic.Network
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
+	}
 	// polygon has different abi
 	if network == chainId.PolygonChainName {
 		return prot.updateAaveV3LendingApyPolygon(underlyings)
-	}
-
-	supportedNetworks := []string{
-		chainId.AvalancheChainName,
-	}
-	if !utils.ContainInArrayX(network, supportedNetworks) {
-		fmt.Println("Aave lend V3", network, "not supported.")
-		return nil
 	}
 
 	// address provider, used in contracts
@@ -298,7 +291,12 @@ func (prot *Protocol) updateAaveV3LendingApy(underlyings []string) error {
 //
 // Update aave v3 lend pools by underlyings.
 func (prot *Protocol) updateAaveV3LendingApyPolygon(underlyings []string) error {
+	// check network
 	network := prot.ProtocolBasic.Network
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
+	}
 	if network != chainId.PolygonChainName {
 		return prot.updateAaveV3LendingApy(underlyings)
 	}
@@ -408,10 +406,11 @@ func (prot *Protocol) updateAaveV3LendingApyPolygon(underlyings []string) error 
 //
 // Update benqi lend pools by underlyings.
 func (prot *Protocol) updateBenqiLendingApy(underlyings []string) error {
+	// check network
 	network := prot.ProtocolBasic.Network
-	if !utils.ContainInArrayX(network, []string{chainId.AvalancheChainName}) {
-		fmt.Println("Benqi lend", network, "not supported.")
-		return nil
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
 	}
 	// avax price
 	chainTokenPrice, err := prot.ProtocolBasic.Gecko.GetPriceBySymbol(chainId.ChainTokenSymbolList[network], network, "usd")
@@ -528,10 +527,11 @@ func (prot *Protocol) updateBenqiLendingApy(underlyings []string) error {
 //
 // Update traderjoe lend pools by underlyings.
 func (prot *Protocol) updateTraderjoeLendingApy(underlyings []string) error {
+	// check network
 	network := prot.ProtocolBasic.Network
-	if !utils.ContainInArrayX(network, []string{chainId.AvalancheChainName}) {
-		fmt.Println("Traderjoe lend", network, "not supported.")
-		return nil
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
 	}
 	comptroller, err := traderjoeComptroller.NewTraderjoeComptroller(types.ToAddress(ethaddr.TraderjoeJoetrollerList[network]), *prot.ProtocolBasic.Client)
 	if err != nil {

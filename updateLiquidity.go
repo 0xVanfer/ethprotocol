@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/0xVanfer/chainId"
 	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/common"
@@ -31,18 +30,20 @@ func (prot *Protocol) UpdateLiquidity() error {
 	// pangolin
 	case ethaddr.PangolinProtocol:
 		return prot.updatePangolinLiquidity()
+	// axial
+	case ethaddr.AxialProtocol:
+		return prot.updateAxialLiquidity()
 	default:
 		return errors.New(prot.ProtocolBasic.ProtocolName + " liquidity pools not supported")
 	}
 }
 
 func (prot *Protocol) updateTraderjoeLiquidity() error {
+	// check network
 	network := prot.ProtocolBasic.Network
-	supportedNetworks := []string{
-		chainId.AvalancheChainName,
-	}
-	if !utils.ContainInArrayX(network, supportedNetworks) {
-		return errors.New("Traderjoe " + network + " not supported.")
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
 	}
 
 	// all pools
@@ -125,7 +126,12 @@ func (prot *Protocol) updateTraderjoeLiquidity() error {
 }
 
 func (prot *Protocol) updateSushiLiquidity() error {
+	// check network
 	network := prot.ProtocolBasic.Network
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
+	}
 
 	poolsInfo, err := requests.ReqSushiPairs(network)
 	if err != nil {
@@ -197,12 +203,11 @@ func (prot *Protocol) updateSushiLiquidity() error {
 }
 
 func (prot *Protocol) updatePangolinLiquidity() error {
+	// check network
 	network := prot.ProtocolBasic.Network
-	supportedNetworks := []string{
-		chainId.AvalancheChainName,
-	}
-	if !utils.ContainInArrayX(network, supportedNetworks) {
-		return errors.New("Pangolin " + network + " not supported.")
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
 	}
 	allInfo, err := requests.ReqPangolinAllInfo()
 	if err != nil {
@@ -273,6 +278,72 @@ func (prot *Protocol) updatePangolinLiquidity() error {
 			ApyInfo:       &apyInfo,
 			Reserve:       types.ToFloat64(pool.Pair.TotalSupply),
 			ReserveUSD:    token0OfLp.ReserveUSD + token1OfLp.ReserveUSD,
+		}
+		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
+	}
+	return nil
+}
+
+func (prot *Protocol) updateAxialLiquidity() error {
+	// check network
+	network := prot.ProtocolBasic.Network
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
+	}
+	pools, err := requests.ReqAxialAvaxPools()
+	if err != nil {
+		return err
+	}
+
+	for _, pool := range pools {
+		// ignore symbol
+		if common.ContainIgnoreSymbol(pool.Tokens[0].Symbol, pool.Tokens[1].Symbol) {
+			fmt.Println(pool.Symbol, "has ignore symbol")
+			continue
+		}
+		// lp
+		lp, err := erc.NewErc20(pool.TokenAddress, network, *prot.ProtocolBasic.Client)
+		if err != nil {
+			fmt.Println(pool.Symbol, err)
+			continue
+		}
+		// tokens
+		var tokens []*liquidity.TokenOfLp
+		for _, tokenInfo := range pool.Tokens {
+			decimals := types.ToInt(tokenInfo.Decimals)
+			token := erc.ERC20Info{
+				Network:  &network,
+				Address:  &tokenInfo.Address,
+				Symbol:   &tokenInfo.Symbol,
+				Decimals: &decimals,
+			}
+			tokenOfLp := liquidity.TokenOfLp{
+				Basic:      &token,
+				Underlying: &token,
+				Reserve:    0, // todo
+				ReserveUSD: 0, // todo
+			}
+			tokens = append(tokens, &tokenOfLp)
+		}
+
+		// apy
+		apr := types.ToFloat64(pool.LastSwapApr) / 100
+		apyInfo := model.ApyInfo{
+			Base: &model.ApyBase{
+				Apr: apr,
+				Apy: utils.Apr2Apy(apr),
+			},
+		}
+
+		newPool := liquidity.LiquidityPool{
+			ProtocolBasic: prot.ProtocolBasic,
+			PoolName:      pool.Symbol,
+			LpToken:       lp,
+			Tokens:        tokens,
+			ApyInfo:       &apyInfo,
+			Reserve:       types.ToFloat64(pool.LastTvl) / types.ToFloat64(pool.LastTokenPrice),
+			ReserveUSD:    types.ToFloat64(pool.LastTvl),
 		}
 		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
 	}
