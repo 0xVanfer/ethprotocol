@@ -23,7 +23,7 @@ type joeLiquidityPoolHourData struct {
 	Date      int    `json:"date"`      // timestamp
 }
 
-type JoeLiquidityPool struct {
+type joeLiquidityPool struct {
 	ID          string                     `json:"id"`          // lp address
 	Name        string                     `json:"name"`        // pool name
 	ReserveUSD  string                     `json:"reserveUSD"`  // total reserve in usd
@@ -36,11 +36,11 @@ type JoeLiquidityPool struct {
 
 type joeLiquidityPoolReq struct {
 	Data struct {
-		Pairs []JoeLiquidityPool `json:"pairs"`
+		Pairs []joeLiquidityPool `json:"pairs"`
 	} `json:"data"`
 }
 
-func ReqJoeAvaxPools() ([]JoeLiquidityPool, error) {
+func ReqJoeAvaxPools() ([]joeLiquidityPool, error) {
 	url := "https://api.thegraph.com/subgraphs/name/traderjoe-xyz/exchange"
 	timestamp := utils.TimestampNow()
 	startTime := fmt.Sprint(timestamp - 86400*2)
@@ -102,13 +102,6 @@ type joeStakePoolsInfo struct {
 	AllocPoint string      `json:"allocPoint"`
 	JlpBalance string      `json:"jlpBalance"`
 	Rewarder   interface{} `json:"rewarder"`
-}
-
-type JoeStakePoolsRewarder struct {
-	ID          string `json:"id"`
-	RewardToken string `json:"rewardToken"`
-	Symbol      string `json:"symbol"`
-	TokenPerSec string `json:"tokenPerSec"`
 }
 
 // version = 2 or 3, representing chefV2 and chefV3

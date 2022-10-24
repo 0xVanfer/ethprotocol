@@ -27,12 +27,12 @@ type pangolinAllInfoReq struct {
 			TotalAllocPoint   string             `json:"totalAllocPoint"`   // total alloc point
 			RewardPerSecond   string             `json:"rewardPerSecond"`   // reward per second
 			RewardsExpiration string             `json:"rewardsExpiration"` //
-			Farms             []PangolinFarmInfo `json:"farms"`             // farms
+			Farms             []pangolinFarmInfo `json:"farms"`             // farms
 		} `json:"minichefs"`
 	} `json:"data"`
 }
 
-type PangolinFarmInfo struct {
+type pangolinFarmInfo struct {
 	ID              string `json:"id"`              // farm address
 	Pid             string `json:"pid"`             // pool id
 	Tvl             string `json:"tvl"`             // total reserve usd
@@ -43,39 +43,29 @@ type PangolinFarmInfo struct {
 	Rewarder        struct {
 		ID      string `json:"id"` // 0x???-0x???
 		Rewards []struct {
-			ID    string `json:"id"` // 0x???-0x???
-			Token struct {
-				ID         string `json:"id"`         // token address
-				Symbol     string `json:"symbol"`     // token symbol
-				DerivedUSD string `json:"derivedUSD"` // price
-				Name       string `json:"name"`       //
-				Decimals   string `json:"decimals"`   // token decimals
-			} `json:"token"`
-			Multiplier string `json:"multiplier"` // int, 1
-		} `json:"rewards"`
-	} `json:"rewarder"`
-	Pair PangolinPairInfo `json:"pair"` // pair info
+			ID         string        `json:"id"`         // 0x???-0x???
+			Token      pangolinToken `json:"token"`      // token info
+			Multiplier string        `json:"multiplier"` // int, 1
+		} `json:"rewards"` // all rewards
+	} `json:"rewarder"` // rewarder info
+	Pair pangolinPairInfo `json:"pair"` // pair info
 }
 
-type PangolinPairInfo struct {
-	ID          string `json:"id"`          // address
-	Reserve0    string `json:"reserve0"`    // token0 reserve
-	Reserve1    string `json:"reserve1"`    // token1 reserve
-	TotalSupply string `json:"totalSupply"` // lp total supply
-	Token0      struct {
-		ID         string `json:"id"`         // token address
-		Symbol     string `json:"symbol"`     // token symbol
-		DerivedUSD string `json:"derivedUSD"` // price
-		Name       string `json:"name"`       //
-		Decimals   string `json:"decimals"`   // token decimals
-	} `json:"token0"`
-	Token1 struct {
-		ID         string `json:"id"`         // token address
-		Symbol     string `json:"symbol"`     // token symbol
-		DerivedUSD string `json:"derivedUSD"` // price
-		Name       string `json:"name"`       //
-		Decimals   string `json:"decimals"`   // token decimals
-	} `json:"token1"`
+type pangolinToken struct {
+	ID         string `json:"id"`         // token address
+	Symbol     string `json:"symbol"`     // token symbol
+	DerivedUSD string `json:"derivedUSD"` // token price
+	Name       string `json:"name"`       // token name
+	Decimals   string `json:"decimals"`   // token decimals
+}
+
+type pangolinPairInfo struct {
+	ID          string        `json:"id"`          // address
+	Reserve0    string        `json:"reserve0"`    // token0 reserve
+	Reserve1    string        `json:"reserve1"`    // token1 reserve
+	TotalSupply string        `json:"totalSupply"` // lp total supply
+	Token0      pangolinToken `json:"token0"`      // token 0
+	Token1      pangolinToken `json:"token1"`      // token1
 }
 
 func ReqPangolinAllInfo() (v pangolinAllInfoReq, err error) {
