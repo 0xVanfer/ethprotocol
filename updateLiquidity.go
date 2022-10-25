@@ -3,8 +3,11 @@ package ethprotocol
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"strings"
 
+	"github.com/0xVanfer/abigen/platypus/platypusChefV2"
+	"github.com/0xVanfer/abigen/platypus/platypusLp"
 	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/common"
@@ -35,6 +38,9 @@ func (prot *Protocol) UpdateLiquidity() error {
 	// axial
 	case ethaddr.AxialProtocol:
 		return prot.updateAxialLiquidity()
+	// platypus
+	case ethaddr.PlatypusProtocol:
+		return prot.updatePlatypusLiquidity()
 	default:
 		return errors.New(prot.ProtocolBasic.ProtocolName + " liquidity pools not supported")
 	}
@@ -103,12 +109,10 @@ func (prot *Protocol) updateTraderjoeLiquidity() error {
 		}
 
 		// apy
-		dailyProfit := types.ToDecimal(pool.ReserveUSD).Mul(decimal.NewFromFloat(0.0025)).Mul(volume24)
-		apr := dailyProfit.Mul(decimal.NewFromInt(365))
 		apyInfo := model.ApyInfo{
-			Apr: apr,
-			Apy: types.ToDecimal(utils.Apr2Apy(apr)),
+			Apr: decimal.NewFromFloat(0.0025).Mul(volume24).Mul(decimal.NewFromInt(365)).Div(types.ToDecimal(pool.ReserveUSD)),
 		}
+		apyInfo.Generate()
 
 		newPool := liquidity.LiquidityPool{
 			ProtocolBasic: prot.ProtocolBasic,
@@ -338,6 +342,97 @@ func (prot *Protocol) updateAxialLiquidity() error {
 			ApyInfo:       &apyInfo,
 			Reserve:       types.ToDecimal(pool.LastTvl).Div(types.ToDecimal(pool.LastTokenPrice)),
 			ReserveUSD:    types.ToDecimal(pool.LastTvl),
+		}
+		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
+	}
+	return nil
+}
+
+func (prot *Protocol) updatePlatypusLiquidity() error {
+	// check network
+	network := prot.ProtocolBasic.Network
+	err := prot.CheckNetwork()
+	if err != nil {
+		return err
+	}
+	masterPlatypusV2, err := platypusChefV2.NewPlatypusChefV2(types.ToAddress(ethaddr.PlatypusMasterPlatypusV2List[network]), *prot.ProtocolBasic.Client)
+	if err != nil {
+		return err
+	}
+	poolLength, err := masterPlatypusV2.PoolLength(nil)
+	if err != nil {
+		return err
+	}
+
+	for pid := 0; pid < types.ToInt(poolLength); pid++ {
+		poolInfo, err := masterPlatypusV2.PoolInfo(nil, big.NewInt(int64(pid)))
+		if err != nil {
+			continue
+		}
+		deprecated := false
+		for sortName, sort := range ethaddr.PlatypusLpList[network] {
+			for _, lpAddress := range sort {
+				if strings.EqualFold(types.ToLowerString(poolInfo.LpToken), lpAddress) {
+					if sortName == "PlatypusDeprecated" {
+						deprecated = true
+					}
+				}
+			}
+		}
+
+		if deprecated {
+			continue
+		}
+
+		lp, err := platypusLp.NewPlatypusLp(poolInfo.LpToken, *prot.ProtocolBasic.Client)
+		if err != nil {
+			continue
+		}
+		underlyingAddr, err := lp.UnderlyingToken(nil)
+		if err != nil {
+			continue
+		}
+
+		lpBasic, err := erc.NewErc20(types.ToLowerString(poolInfo.LpToken), network, *prot.ProtocolBasic.Client)
+		if err != nil {
+			continue
+		}
+
+		underlying, err := erc.NewErc20(types.ToLowerString(underlyingAddr), network, *prot.ProtocolBasic.Client)
+		if err != nil {
+			continue
+		}
+		tokenOfLp := liquidity.TokenOfLp{
+			Basic:      underlying,
+			Underlying: underlying,
+		}
+
+		liabilityBig, err := lp.Liability(nil)
+		if err != nil {
+			continue
+		}
+		liability := types.ToDecimal(liabilityBig).Div(decimal.New(1, int32(*underlying.Decimals)))
+
+		cashBig, err := lp.Cash(nil)
+		if err != nil {
+			continue
+		}
+		cash := types.ToDecimal(cashBig).Div(decimal.New(1, int32(*underlying.Decimals)))
+		coverageRatio := cash.Div(liability)
+
+		otherInfo := liquidity.LiquidityOtherInfo{
+			Liability:     liability,
+			Cash:          cash,
+			CoverageRatio: coverageRatio,
+		}
+
+		newPool := liquidity.LiquidityPool{
+			ProtocolBasic: prot.ProtocolBasic,
+			PoolName:      *lpBasic.Symbol,
+			LpToken:       lpBasic,
+			Tokens:        []*liquidity.TokenOfLp{&tokenOfLp},
+			ApyInfo:       &model.ApyInfo{},
+			OtherInfo:     &otherInfo,
 		}
 		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
 	}

@@ -28,6 +28,9 @@ func (prot *Protocol) CheckNetwork() error {
 	// pangolin
 	case ethaddr.PangolinProtocol:
 		supportedNetworks = []string{chainId.AvalancheChainName}
+	// platypus
+	case ethaddr.PlatypusProtocol:
+		supportedNetworks = []string{chainId.AvalancheChainName}
 	// sushi
 	case ethaddr.SushiProtocol:
 		// sushi supports almost every chain
