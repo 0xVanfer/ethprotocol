@@ -13,7 +13,7 @@ type AToken struct {
 	ProtocolBasic   *model.ProtocolBasic
 	Basic           *erc.ERC20Info // basic info of the token
 	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	ApyInfo         model.ApyInfo  // deposit apy info
+	ApyInfo         *model.ApyInfo // deposit apy info
 }
 
 // Use a token address to get underlying address.

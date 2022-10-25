@@ -13,7 +13,7 @@ type VToken struct {
 	ProtocolBasic   *model.ProtocolBasic
 	Basic           *erc.ERC20Info // basic info of the token
 	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	ApyInfo         model.ApyInfo  // borrow variable apy info
+	ApyInfo         *model.ApyInfo // borrow variable apy info
 }
 
 // Use v token address to get underlying address.

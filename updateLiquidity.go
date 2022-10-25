@@ -8,11 +8,13 @@ import (
 	"github.com/0xVanfer/erc"
 	"github.com/0xVanfer/ethaddr"
 	"github.com/0xVanfer/ethprotocol/internal/common"
+	"github.com/0xVanfer/ethprotocol/internal/constants"
 	"github.com/0xVanfer/ethprotocol/internal/requests"
 	"github.com/0xVanfer/ethprotocol/liquidity"
 	"github.com/0xVanfer/ethprotocol/model"
 	"github.com/0xVanfer/types"
 	"github.com/0xVanfer/utils"
+	"github.com/shopspring/decimal"
 )
 
 func (prot *Protocol) UpdateLiquidity() error {
@@ -58,11 +60,11 @@ func (prot *Protocol) updateTraderjoeLiquidity() error {
 			continue
 		}
 		// volume 24
-		var volume24 float64
+		var volume24 decimal.Decimal
 		for _, data := range pool.HourData {
-			volume24 += types.ToFloat64(data.VolumeUSD)
+			volume24 = volume24.Add(types.ToDecimal(data.VolumeUSD))
 		}
-		if volume24 == 0 {
+		if volume24.IsZero() {
 			fmt.Println(pool.Name, "volume is 0")
 			continue
 		}
@@ -83,8 +85,8 @@ func (prot *Protocol) updateTraderjoeLiquidity() error {
 		token0OfLp := liquidity.TokenOfLp{
 			Basic:      &token0,
 			Underlying: &token0,
-			Reserve:    types.ToFloat64(pool.Token0.Volume) * 1e-18,
-			ReserveUSD: types.ToFloat64(pool.Token0.VolumeUSD) * 1e-18,
+			Reserve:    types.ToDecimal(pool.Token0.Volume).Div(constants.WEIUnit),
+			ReserveUSD: types.ToDecimal(pool.Token0.VolumeUSD).Div(constants.WEIUnit),
 		}
 		token1Decimals := types.ToInt(pool.Token1.Decimals)
 		token1 := erc.ERC20Info{
@@ -96,18 +98,16 @@ func (prot *Protocol) updateTraderjoeLiquidity() error {
 		token1OfLp := liquidity.TokenOfLp{
 			Basic:      &token1,
 			Underlying: &token1,
-			Reserve:    types.ToFloat64(pool.Token1.Volume) * 1e-18,
-			ReserveUSD: types.ToFloat64(pool.Token1.VolumeUSD) * 1e-18,
+			Reserve:    types.ToDecimal(pool.Token1.Volume).Div(constants.WEIUnit),
+			ReserveUSD: types.ToDecimal(pool.Token1.VolumeUSD).Div(constants.WEIUnit),
 		}
 
 		// apy
-		dailyProfit := 0.0025 * volume24 / types.ToFloat64(pool.ReserveUSD)
-		apr := dailyProfit * 365
+		dailyProfit := types.ToDecimal(pool.ReserveUSD).Mul(decimal.NewFromFloat(0.0025)).Mul(volume24)
+		apr := dailyProfit.Mul(decimal.NewFromInt(365))
 		apyInfo := model.ApyInfo{
-			Base: &model.ApyBase{
-				Apr: apr,
-				Apy: utils.Apr2Apy(apr),
-			},
+			Apr: apr,
+			Apy: types.ToDecimal(utils.Apr2Apy(apr)),
 		}
 
 		newPool := liquidity.LiquidityPool{
@@ -116,8 +116,8 @@ func (prot *Protocol) updateTraderjoeLiquidity() error {
 			LpToken:       lp,
 			Tokens:        []*liquidity.TokenOfLp{&token0OfLp, &token1OfLp},
 			ApyInfo:       &apyInfo,
-			Reserve:       types.ToFloat64(pool.TotalSupply),
-			ReserveUSD:    types.ToFloat64(pool.ReserveUSD),
+			Reserve:       types.ToDecimal(pool.TotalSupply),
+			ReserveUSD:    types.ToDecimal(pool.ReserveUSD),
 			Volume24:      volume24,
 		}
 		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
@@ -180,12 +180,10 @@ func (prot *Protocol) updateSushiLiquidity() error {
 		}
 
 		// apy
-		apy := types.ToFloat64(strings.ReplaceAll(pool.Apy, "%", "")) / 100
+		apy := types.ToDecimal(strings.ReplaceAll(pool.Apy, "%", "")).Div(decimal.NewFromInt(100))
 		apyInfo := model.ApyInfo{
-			Base: &model.ApyBase{
-				Apr: utils.Apy2Apr(apy),
-				Apy: apy,
-			},
+			Apr: types.ToDecimal(utils.Apy2Apr(apy)),
+			Apy: apy,
 		}
 
 		newPool := liquidity.LiquidityPool{
@@ -194,8 +192,8 @@ func (prot *Protocol) updateSushiLiquidity() error {
 			LpToken:       lp,
 			Tokens:        []*liquidity.TokenOfLp{&token0OfLp, &token1OfLp},
 			ApyInfo:       &apyInfo,
-			ReserveUSD:    types.ToFloat64(pool.Liquidity),
-			Volume24:      pool.Volume1D,
+			ReserveUSD:    types.ToDecimal(pool.Liquidity),
+			Volume24:      types.ToDecimal(pool.Volume1D),
 		}
 		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
 	}
@@ -239,8 +237,8 @@ func (prot *Protocol) updatePangolinLiquidity() error {
 		token0OfLp := liquidity.TokenOfLp{
 			Basic:      &token0,
 			Underlying: &token0,
-			Reserve:    types.ToFloat64(pool.Pair.Reserve0),
-			ReserveUSD: types.ToFloat64(pool.Pair.Token0.DerivedUSD) * types.ToFloat64(pool.Pair.Reserve0),
+			Reserve:    types.ToDecimal(pool.Pair.Reserve0),
+			ReserveUSD: types.ToDecimal(pool.Pair.Token0.DerivedUSD).Mul(types.ToDecimal(pool.Pair.Reserve0)),
 		}
 		token1Decimals := types.ToInt(pool.Pair.Token1.Decimals)
 		token1 := erc.ERC20Info{
@@ -252,8 +250,8 @@ func (prot *Protocol) updatePangolinLiquidity() error {
 		token1OfLp := liquidity.TokenOfLp{
 			Basic:      &token1,
 			Underlying: &token1,
-			Reserve:    types.ToFloat64(pool.Pair.Reserve1),
-			ReserveUSD: types.ToFloat64(pool.Pair.Token1.DerivedUSD) * types.ToFloat64(pool.Pair.Reserve1),
+			Reserve:    types.ToDecimal(pool.Pair.Reserve1),
+			ReserveUSD: types.ToDecimal(pool.Pair.Token1.DerivedUSD).Mul(types.ToDecimal(pool.Pair.Reserve1)),
 		}
 
 		// apy
@@ -262,12 +260,10 @@ func (prot *Protocol) updatePangolinLiquidity() error {
 			fmt.Println(name, err)
 			continue
 		}
-		apr := types.ToFloat64(apys.SwapFeeApr) / 100
+		apr := types.ToDecimal(apys.SwapFeeApr).Div(decimal.NewFromInt(100))
 		apyInfo := model.ApyInfo{
-			Base: &model.ApyBase{
-				Apr: apr,
-				Apy: utils.Apr2Apy(apr),
-			},
+			Apr: apr,
+			Apy: types.ToDecimal(utils.Apr2Apy(apr)),
 		}
 
 		newPool := liquidity.LiquidityPool{
@@ -276,8 +272,8 @@ func (prot *Protocol) updatePangolinLiquidity() error {
 			LpToken:       lp,
 			Tokens:        []*liquidity.TokenOfLp{&token0OfLp, &token1OfLp},
 			ApyInfo:       &apyInfo,
-			Reserve:       types.ToFloat64(pool.Pair.TotalSupply),
-			ReserveUSD:    token0OfLp.ReserveUSD + token1OfLp.ReserveUSD,
+			Reserve:       types.ToDecimal(pool.Pair.TotalSupply),
+			ReserveUSD:    token0OfLp.ReserveUSD.Add(token1OfLp.ReserveUSD),
 		}
 		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
 	}
@@ -321,19 +317,17 @@ func (prot *Protocol) updateAxialLiquidity() error {
 			tokenOfLp := liquidity.TokenOfLp{
 				Basic:      &token,
 				Underlying: &token,
-				Reserve:    0, // todo
-				ReserveUSD: 0, // todo
+				Reserve:    decimal.Zero, // todo
+				ReserveUSD: decimal.Zero, // todo
 			}
 			tokens = append(tokens, &tokenOfLp)
 		}
 
 		// apy
-		apr := types.ToFloat64(pool.LastSwapApr) / 100
+		apr := types.ToDecimal(pool.LastSwapApr).Div(decimal.NewFromInt(100))
 		apyInfo := model.ApyInfo{
-			Base: &model.ApyBase{
-				Apr: apr,
-				Apy: utils.Apr2Apy(apr),
-			},
+			Apr: apr,
+			Apy: types.ToDecimal(utils.Apr2Apy(apr)),
 		}
 
 		newPool := liquidity.LiquidityPool{
@@ -342,8 +336,8 @@ func (prot *Protocol) updateAxialLiquidity() error {
 			LpToken:       lp,
 			Tokens:        tokens,
 			ApyInfo:       &apyInfo,
-			Reserve:       types.ToFloat64(pool.LastTvl) / types.ToFloat64(pool.LastTokenPrice),
-			ReserveUSD:    types.ToFloat64(pool.LastTvl),
+			Reserve:       types.ToDecimal(pool.LastTvl).Div(types.ToDecimal(pool.LastTokenPrice)),
+			ReserveUSD:    types.ToDecimal(pool.LastTvl),
 		}
 		prot.LiquidityPools = append(prot.LiquidityPools, &newPool)
 	}
