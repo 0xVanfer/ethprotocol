@@ -3,3 +3,4 @@
 test/const.go
 go.work
 go.work.sum
+/.vscode

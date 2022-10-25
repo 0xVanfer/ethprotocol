@@ -41,6 +41,8 @@ type aaveV2LendingPoolInfo struct {
 }
 
 // Return aava v2 lend pools info.
+//
+// Only support avalanche and ethereum now.
 func ReqAaveV2LendingPools(network string) ([]aaveV2LendingPoolInfo, error) {
 	var url string
 	switch network {

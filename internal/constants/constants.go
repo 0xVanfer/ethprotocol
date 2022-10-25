@@ -2,12 +2,14 @@ package constants
 
 import "github.com/shopspring/decimal"
 
-var SecondsPerDay = decimal.New(86400, 0)
-var SecondsPerYear = SecondsPerDay.Mul(decimal.New(365, 0))
+var SecondsPerDay = decimal.NewFromInt(86400)                   // Seconds in a day.
+var SecondsPerYear = SecondsPerDay.Mul(decimal.NewFromInt(365)) // Seconds in a year.
 
-var RAYUnit = decimal.New(1, 27)
-var WEIUnit = decimal.New(1, 18)
+var RAYUnit = decimal.New(1, 27) // 1e27
+var WEIUnit = decimal.New(1, 18) // 1e18
 
+// Some annoying symbols that represent a meaningless token,
+// which will be ignored by the program.
 var IgnoreSymbols = []string{
 	"ot-qiusdc-28dec2023",
 	"ot-jlp-28dec2023",

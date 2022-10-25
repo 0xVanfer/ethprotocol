@@ -25,6 +25,10 @@ func (prot *Protocol) CheckNetwork() error {
 	// benqi
 	case ethaddr.BenqiProtocol:
 		supportedNetworks = []string{chainId.AvalancheChainName}
+	// curve
+	case ethaddr.CurveProtocol:
+		// curve supports almost every chain
+		return nil
 	// pangolin
 	case ethaddr.PangolinProtocol:
 		supportedNetworks = []string{chainId.AvalancheChainName}

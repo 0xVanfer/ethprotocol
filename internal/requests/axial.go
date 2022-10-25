@@ -28,7 +28,7 @@ type axialRewardToken struct {
 	Symbol     string `json:"symbol"`      // token symbol
 }
 
-type AxialPool struct {
+type axialPool struct {
 	ID                    string             `json:"id"`                       // ignore
 	Symbol                string             `json:"symbol"`                   // lp token symvol
 	TokenAddress          string             `json:"tokenaddress"`             // lp address
@@ -53,7 +53,7 @@ type AxialPool struct {
 	RewardTokens          []axialRewardToken `json:"rewardTokens"`             // reward token
 }
 
-func ReqAxialAvaxPools() (v []AxialPool, err error) {
+func ReqAxialAvaxPools() (v []axialPool, err error) {
 	url := "https://axial-api.snowapi.net/pools"
 	r, _ := req.Get(url)
 	err = r.ToJSON(&v)

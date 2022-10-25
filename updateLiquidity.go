@@ -26,27 +26,30 @@ func (prot *Protocol) UpdateLiquidity() error {
 		return errors.New("protocol basic must be initialized")
 	}
 	switch prot.ProtocolBasic.ProtocolName {
+	// curve
+	case ethaddr.CurveProtocol:
+		return prot.updateLiquidityCurve()
 	// traderjoe
 	case ethaddr.TraderJoeProtocol:
-		return prot.updateTraderjoeLiquidity()
+		return prot.updateLiquidityTraderjoe()
 	// sushi
 	case ethaddr.SushiProtocol:
-		return prot.updateSushiLiquidity()
+		return prot.updateLiquiditySushi()
 	// pangolin
 	case ethaddr.PangolinProtocol:
-		return prot.updatePangolinLiquidity()
+		return prot.updateLiquidityPangolin()
 	// axial
 	case ethaddr.AxialProtocol:
-		return prot.updateAxialLiquidity()
+		return prot.updateLiquidityAxial()
 	// platypus
 	case ethaddr.PlatypusProtocol:
-		return prot.updatePlatypusLiquidity()
+		return prot.updateLiquidityPlatypus()
 	default:
 		return errors.New(prot.ProtocolBasic.ProtocolName + " liquidity pools not supported")
 	}
 }
 
-func (prot *Protocol) updateTraderjoeLiquidity() error {
+func (prot *Protocol) updateLiquidityTraderjoe() error {
 	// check network
 	network := prot.ProtocolBasic.Network
 	err := prot.CheckNetwork()
@@ -129,7 +132,7 @@ func (prot *Protocol) updateTraderjoeLiquidity() error {
 	return nil
 }
 
-func (prot *Protocol) updateSushiLiquidity() error {
+func (prot *Protocol) updateLiquiditySushi() error {
 	// check network
 	network := prot.ProtocolBasic.Network
 	err := prot.CheckNetwork()
@@ -204,7 +207,7 @@ func (prot *Protocol) updateSushiLiquidity() error {
 	return nil
 }
 
-func (prot *Protocol) updatePangolinLiquidity() error {
+func (prot *Protocol) updateLiquidityPangolin() error {
 	// check network
 	network := prot.ProtocolBasic.Network
 	err := prot.CheckNetwork()
@@ -284,7 +287,7 @@ func (prot *Protocol) updatePangolinLiquidity() error {
 	return nil
 }
 
-func (prot *Protocol) updateAxialLiquidity() error {
+func (prot *Protocol) updateLiquidityAxial() error {
 	// check network
 	network := prot.ProtocolBasic.Network
 	err := prot.CheckNetwork()
@@ -348,7 +351,7 @@ func (prot *Protocol) updateAxialLiquidity() error {
 	return nil
 }
 
-func (prot *Protocol) updatePlatypusLiquidity() error {
+func (prot *Protocol) updateLiquidityPlatypus() error {
 	// check network
 	network := prot.ProtocolBasic.Network
 	err := prot.CheckNetwork()
