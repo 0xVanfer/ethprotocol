@@ -10,11 +10,11 @@ import (
 )
 
 type CToken struct {
-	ProtocolBasic   *model.ProtocolBasic
-	Basic           *erc.ERC20Info // basic info of the token
-	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	SupplyApyInfo   *model.ApyInfo // supply apy info
-	BorrowApyInfo   *model.ApyInfo // borrow apy info
+	ProtocolBasic   *model.ProtocolBasic // basic info of the protocol
+	Basic           *erc.ERC20Info       // basic info of the token
+	UnderlyingBasic *erc.ERC20Info       // basic info of the underlying token
+	SupplyApyInfo   *model.ApyInfo       // supply apy info
+	BorrowApyInfo   *model.ApyInfo       // borrow apy info
 }
 
 // Use c token address to get underlying address.

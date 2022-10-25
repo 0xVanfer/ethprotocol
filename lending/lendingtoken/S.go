@@ -10,10 +10,10 @@ import (
 )
 
 type SToken struct {
-	ProtocolBasic   *model.ProtocolBasic
-	Basic           *erc.ERC20Info // basic info of the token
-	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	ApyInfo         *model.ApyInfo // borrow stable apy info
+	ProtocolBasic   *model.ProtocolBasic // basic info of the protocol
+	Basic           *erc.ERC20Info       // basic info of the token
+	UnderlyingBasic *erc.ERC20Info       // basic info of the underlying token
+	ApyInfo         *model.ApyInfo       // borrow stable apy info
 }
 
 // Use s token address to get underlying address.

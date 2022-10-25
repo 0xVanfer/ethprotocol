@@ -43,7 +43,8 @@ func (p *LendingPool) UpdateTokensByUnderlying(underlying string) error {
 // Update pool tokens info by a token.
 func (p *LendingPool) UpdateTokensByAToken(atoken string) error {
 	p.AToken.ProtocolBasic = p.ProtocolBasic
-	underlyingAddress, err := p.AToken.GetUnderlyingAddress(atoken)
+	p.AToken.Basic.Address = &atoken
+	underlyingAddress, err := p.AToken.GetUnderlyingAddress()
 	if err != nil {
 		return err
 	}

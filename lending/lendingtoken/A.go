@@ -9,25 +9,32 @@ import (
 	"github.com/0xVanfer/ethprotocol/model"
 )
 
+// Aave like a token.
 type AToken struct {
-	ProtocolBasic   *model.ProtocolBasic
-	Basic           *erc.ERC20Info // basic info of the token
-	UnderlyingBasic *erc.ERC20Info // basic info of the underlying token
-	ApyInfo         *model.ApyInfo // deposit apy info
+	ProtocolBasic   *model.ProtocolBasic // basic info of the protocol
+	Basic           *erc.ERC20Info       // basic info of the token
+	UnderlyingBasic *erc.ERC20Info       // basic info of the underlying token
+	ApyInfo         *model.ApyInfo       // deposit apy info
 }
 
-// Use a token address to get underlying address.
-func (t *AToken) GetUnderlyingAddress(atoken string) (string, error) {
-	if !t.ProtocolBasic.Regularcheck() {
-		return "", errors.New("a token protocol basic must be initialized")
+func GetATokenUnderlyingAddress(protocol, network, atoken string) (string, error) {
+	aList := ethaddr.AaveLikeATokenListMap[protocol]
+	if aList == nil {
+		return "", errors.New("not supported aave like protocol " + protocol)
 	}
-	aList := *ethaddr.AaveLikeATokenListMap[t.ProtocolBasic.ProtocolName]
-	for underlying, atokenAddress := range aList[t.ProtocolBasic.Network] {
+	for underlying, atokenAddress := range (*aList)[network] {
 		if strings.EqualFold(atokenAddress, atoken) {
 			return underlying, nil
 		}
 	}
-	return "", errors.New("underlying token not found by a token " + atoken)
+	return "", errors.New("underlying token not found by a token " + atoken + " in " + protocol + ", " + network)
+}
+
+func (t *AToken) GetUnderlyingAddress() (string, error) {
+	if !t.ProtocolBasic.Regularcheck() {
+		return "", errors.New("a token protocol basic must be initialized")
+	}
+	return GetATokenUnderlyingAddress(t.ProtocolBasic.ProtocolName, t.ProtocolBasic.Network, *t.Basic.Address)
 }
 
 // Use underlying address to update a token info.
