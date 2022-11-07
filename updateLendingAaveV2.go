@@ -61,31 +61,40 @@ func (prot *Protocol) updateLendingAaveV2(underlyings []string) error {
 				fmt.Println("atoken of", underlyingAddress, "not found")
 				continue
 			}
-			aSupply, err := lendingPool.AToken.Basic.TotalSupply()
-			if err != nil {
-				continue
-			}
+			aSupply, _ := lendingPool.AToken.Basic.TotalSupply()
 
 			vEmissionUSD := types.ToDecimal(poolInfo.VEmissionPerSecond).Mul(constants.SecondsPerYear).Mul(chainTokenPrice).Div(constants.WEIUnit)
 			if lendingPool.VToken.Basic == nil {
 				fmt.Println("vtoken of", underlyingAddress, "not found")
 				continue
 			}
-			vSupply, err := lendingPool.VToken.Basic.TotalSupply()
-			if err != nil {
-				continue
-			}
+			vSupply, _ := lendingPool.VToken.Basic.TotalSupply()
+
 			// a token
-			lendingPool.AToken.ApyInfo = &model.ApyInfo{
-				Apr:               types.ToDecimal(poolInfo.LiquidityRate).Div(constants.RAYUnit),
-				IncentiveTotalApr: aEmissionUSD.Div(aSupply).Div(underlyingPriceUSD),
+			if aSupply.IsZero() {
+				lendingPool.AToken.ApyInfo = &model.ApyInfo{
+					Apr:               types.ToDecimal(poolInfo.LiquidityRate).Div(constants.RAYUnit),
+					IncentiveTotalApr: decimal.Zero,
+				}
+			} else {
+				lendingPool.AToken.ApyInfo = &model.ApyInfo{
+					Apr:               types.ToDecimal(poolInfo.LiquidityRate).Div(constants.RAYUnit),
+					IncentiveTotalApr: aEmissionUSD.Div(aSupply).Div(underlyingPriceUSD),
+				}
 			}
 			lendingPool.AToken.ApyInfo.Generate()
 
 			// v token
-			lendingPool.VToken.ApyInfo = &model.ApyInfo{
-				Apr:               types.ToDecimal(poolInfo.VariableBorrowRate).Div(constants.RAYUnit),
-				IncentiveTotalApr: vEmissionUSD.Div(vSupply).Div(underlyingPriceUSD),
+			if vSupply.IsZero() {
+				lendingPool.VToken.ApyInfo = &model.ApyInfo{
+					Apr:               types.ToDecimal(poolInfo.VariableBorrowRate).Div(constants.RAYUnit),
+					IncentiveTotalApr: decimal.Zero,
+				}
+			} else {
+				lendingPool.VToken.ApyInfo = &model.ApyInfo{
+					Apr:               types.ToDecimal(poolInfo.VariableBorrowRate).Div(constants.RAYUnit),
+					IncentiveTotalApr: vEmissionUSD.Div(vSupply).Div(underlyingPriceUSD),
+				}
 			}
 			lendingPool.VToken.ApyInfo.Generate()
 
