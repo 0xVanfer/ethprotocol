@@ -54,8 +54,11 @@ func ReqAaveV2LendingPools(network string) ([]aaveV2LendingPoolInfo, error) {
 		return nil, errors.New("not supported network:" + network)
 	}
 	payload := strings.NewReader(`{"query":"{\n reserves {\n symbol\n decimals\n underlyingAsset\n aToken{id}\n vToken{id}\n sToken{id}\n liquidityRate\n stableBorrowRate\n variableBorrowRate\n aEmissionPerSecond\n vEmissionPerSecond\n sEmissionPerSecond\n totalDeposits\n totalLiquidity\n totalScaledVariableDebt\n totalPrincipalStableDebt\n reserveFactor\n totalCurrentVariableDebt\n totalLiquidityAsCollateral\n utilizationRate\n}\n}\n\n"}`)
-	r, _ := req.Post(url, payload)
+	r, err := req.Post(url, payload)
+	if err != nil {
+		return nil, err
+	}
 	var v aaveV2LendingPoolsReq
-	err := r.ToJSON(&v)
+	err = r.ToJSON(&v)
 	return v.Data.Reserves, err
 }
