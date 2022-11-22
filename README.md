@@ -1,5 +1,11 @@
 # Protocols
 
+Not updated and not updating. 
+
+Due to Coingecko request frequency limit, it will not always work properly.
+
+Maybe will be deprecated.
+
 ```mermaid
 graph LR
 commonapys[apy info struct]
